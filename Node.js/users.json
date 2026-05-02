@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "name": "Pranav",
+    "email": "pranav@example.com",
+    "age": 22,
+    "role": "admin"
+  },
+  {
+    "id": 2,
+    "name": "Rahul",
+    "email": "rahul@example.com",
+    "age": 24,
+    "role": "user"
+  },
+  {
+    "id": 3,
+    "name": "Prince",
+    "email": "prince@example.com",
+    "age": 21,
+    "role": "user"
+  },
+  {
+    "id": 4,
+    "name": "Sahil",
+    "email": "sahil@example.com",
+    "age": 23,
+    "role": "moderator"
+  },
+  {
+    "id": 5,
+    "name": "testing menu",
+    "email": "sonaiyamahesh+39@gmail.com",
+    "age": 57,
+    "role": "user"
+  }
+]
