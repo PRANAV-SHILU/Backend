@@ -1,0 +1,2 @@
+Hello from WriteFile of node.js
+Hello from appendFile of node.js
