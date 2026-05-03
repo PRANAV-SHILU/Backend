@@ -1,3 +1,4 @@
+import { Favourite } from "../models/favourites.js";
 import { Home } from "../models/home.js";
 
 export async function getHome(req, res, next) {
@@ -34,4 +35,20 @@ export async function postAddHome(req, res) {
   const home = new Home(req.body.name, req.body.location, req.body.price);
   home.save();
   res.render("homeAdded", { ...req.body });
+}
+
+export async function postAddToFavourites(req, res) {
+  console.log("favourites post", req.body);
+  Favourite.addToFavourite(req.body.id, (error) => {
+    if (error) console.log("Error is postAddToFavourites", error);
+  });
+  res.redirect("/favourites");
+}
+export async function getFavourites(req, res) {
+  Favourite.getFavourites((favourites) => {
+    Home.fetchAll((homes) => {
+      const favouritesWithDetails = favourites.map(homeID => homes.find(home => home.id == homeID))
+      res.render("favourites", { homes: favouritesWithDetails });
+    })
+  });
 }

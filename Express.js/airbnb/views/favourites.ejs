@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favourites</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <%- include('partials/header') %>
+        <div class="container">
+            <h1>Here are your Favourite homes:</h1>
+            <ul>
+                <% homes.forEach(home=> { %>
+                    <li>
+                        <h3>
+                            <%= home.name %>
+                        </h3>
+                        <p>
+                            <%= home.id %>
+                        </p>
+                        <p>
+                            <%= home.location %>
+                        </p>
+                        <p>Price per night: $<%= home.price %>
+                        </p>
+                        <a href="/homes/<%=home.id%>">Details</a>
+                    </li>
+                    <% }) %>
+            </ul>
+
+            <a href="/" class="btn">Back To Home</a>
+        </div>
+
+</body>
+
+</html>

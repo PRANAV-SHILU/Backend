@@ -1,7 +1,12 @@
 import express from "express";
 import rootDir from "../utils/pathUtil.js";
 import path from "path";
-import { getHome, getHomeByID } from "../controllers/Homes.controller.js";
+import {
+  getFavourites,
+  getHome,
+  getHomeByID,
+  postAddToFavourites,
+} from "../controllers/Homes.controller.js";
 
 const userRouter = express.Router();
 
@@ -9,6 +14,10 @@ const userRouter = express.Router();
 userRouter.get("/", getHome);
 
 userRouter.get("/homes/:homeID", getHomeByID);
+
+userRouter.post("/favourites", postAddToFavourites);
+
+userRouter.get("/favourites", getFavourites);
 
 // userRouter.get("/", (req, res, next) => {
 //   console.log(homes);

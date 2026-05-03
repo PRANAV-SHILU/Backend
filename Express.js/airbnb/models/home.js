@@ -3,6 +3,7 @@ import path from "path";
 import rootDir from "../utils/pathUtil.js";
 
 const filePath = path.join(rootDir, "data", "homes.json");
+const favouritesPath = path.join(rootDir, "data", "favourites.json");
 
 export class Home {
   constructor(name, location, price) {
@@ -10,6 +11,7 @@ export class Home {
     this.location = location;
     this.price = price;
   }
+
   save() {
     // first fetch existant then push and write again
     this.id = Math.random();
@@ -25,10 +27,15 @@ export class Home {
       callback(err ? [] : data.length > 0 ? JSON.parse(data) : []);
     });
   }
+  static fetchFavourites(callback) {
+    fs.readFile(favouritesPath, (err, data) => {
+      callback(err ? [] : data.length > 0 ? JSON.parse(data) : []);
+    });
+  }
 
   static findByID(homeID, callback) {
     Home.fetchAll((homes) => {
-      const home = homes.find((h) => (h.id == homeID));
+      const home = homes.find((h) => h.id == homeID);
       callback(home);
     });
   }
