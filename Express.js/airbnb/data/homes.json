@@ -1,17 +1,1 @@
-[
-    {
-        "name": "first",
-        "location": "frist",
-        "price": "100"
-    },
-    {
-        "name": "second",
-        "location": "second",
-        "price": "200"
-    },
-    {
-        "name": "three",
-        "location": "three",
-        "price": "300"
-    }
-]
+[{"name":"first","location":"frist","price":"100"},{"name":"second","location":"second","price":"200"},{"name":"three","location":"three","price":"300"},{"name":"fputh","location":"fourth","price":"400"}]

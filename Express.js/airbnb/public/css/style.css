@@ -88,6 +88,9 @@ ul {
 }
 
 li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background: #f8f9fa;
   padding: 15px 20px;
   margin-bottom: 10px;
@@ -97,6 +100,10 @@ li {
   border-left: 4px solid #667eea;
   text-align: left;
   transition: transform 0.2s, box-shadow 0.2s;
+}
+
+li h3, li p {
+  margin: 0;
 }
 
 li:hover {
