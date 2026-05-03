@@ -1,10 +1,13 @@
 import { Home } from "../models/home.js";
 
 export async function getHome(req, res, next) {
-  const homes = Home.fetchAll(); // because od static
-  console.log(homes);
-  //for ejs
-  res.render("home", { homes: homes });
+  // due to callback
+  Home.fetchAll((homes) => {
+    // because of static
+    console.log(homes);
+    //for ejs
+    res.render("home", { homes: homes });
+  });
 }
 
 export async function getAddHome(req, res) {

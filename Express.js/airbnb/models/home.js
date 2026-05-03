@@ -1,5 +1,6 @@
-// fake database
-const homes = [];
+import fs from "fs";
+import path from "path";
+import rootDir from "../utils/pathUtil.js";
 
 export class Home {
   constructor(name, location, price) {
@@ -8,10 +9,19 @@ export class Home {
     this.price = price;
   }
   save() {
-    homes.push(this);
+    // first fetch existant then push and write again
+    Home.fetchAll((homes) => {
+      homes.push(this);
+      const filePath = path.join(rootDir, "data", "homes.json");
+      fs.writeFile(filePath, JSON.stringify(homes), (err) =>
+        console.log("err in writing file", err),
+      );
+    });
   }
-  // call: const details = Home.fetchAll()
-  static fetchAll() {
-    return homes;
+  static fetchAll(callback) {
+    const filePath = path.join(rootDir, "data", "homes.json");
+    fs.readFile(filePath, (err, data) => {
+      callback(err ? [] : data.length > 0 ? JSON.parse(data) : []);
+    });
   }
 }
