@@ -10,6 +10,20 @@ export async function getHome(req, res, next) {
   });
 }
 
+export async function getHomeByID(req, res) {
+  const homeID = req.params.homeID;
+  Home.findByID(homeID, (home) => {
+    if (!home) {
+      console.log("Home not found");
+      res.redirect("/");
+    }
+    // because of static
+    console.log(home);
+    //for ejs
+    res.render("home-detail", { home: home });
+  });
+}
+
 export async function getAddHome(req, res) {
   // res.sendFile(path.join(rootDir, "views", "add-home.html"));
   res.render("add-home");

@@ -15,8 +15,10 @@
         <% homes.forEach(home => { %>
         <li>
           <h3><%= home.name %></h3>
+          <p><%= home.id %></p>
           <p><%= home.location %></p>
           <p>Price per night: $<%= home.price %></p>
+          <a href="/homes/<%=home.id%>">Details</a>
         </li>
         <% }) %>
       </ul>

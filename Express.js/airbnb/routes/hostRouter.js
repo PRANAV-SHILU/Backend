@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import rootDir from "../utils/pathUtil.js";
-import { getAddHome, postAddHome } from "../controllers/Homes.js";
+import { getAddHome, postAddHome } from "../controllers/Homes.controller.js";
 
 const hostRouter = express.Router();
 

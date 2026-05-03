@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home detail page</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <%- include('partials/header') %>
+
+        <div class="container">
+            <h1>Home Details found!</h1>
+            <p>Home ID: <%= home.id %>
+            </p>
+            <p>Home Name: <%= home.name %>
+            </p>
+            <p>Location: <%= home.location %>
+            </p>
+            <p>Price per night: $<%= home.price %>
+            </p>
+            <a href="/" class="btn">Go back to Home</a>
+        </div>
+</body>
+
+</html>

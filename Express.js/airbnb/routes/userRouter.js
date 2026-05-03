@@ -1,12 +1,14 @@
 import express from "express";
 import rootDir from "../utils/pathUtil.js";
 import path from "path";
-import { getHome } from "../controllers/Homes.js";
+import { getHome, getHomeByID } from "../controllers/Homes.controller.js";
 
 const userRouter = express.Router();
 
 // serving HTML files
 userRouter.get("/", getHome);
+
+userRouter.get("/homes/:homeID", getHomeByID);
 
 // userRouter.get("/", (req, res, next) => {
 //   console.log(homes);
