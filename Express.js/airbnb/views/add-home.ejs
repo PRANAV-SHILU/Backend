@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Home</title>
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body>
+    <%- include('partials/header') %>
+    <div class="container">
+      <h1 class="page-title">Register your home</h1>
+      <form action="/host/add-home" method="POST">
+        <label for="name">Home Name:</label>
+        <input type="text" id="name" name="name" required />
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required />
+        <label for="price">Price per night:</label>
+        <input type="number" id="price" name="price" required />
+        <input type="submit" value="Submit" />
+      </form>
+    </div>
+  </body>
+</html>
