@@ -25,6 +25,7 @@ app.use("/host", hostRouter);
 app.use((req, res) => {
   res.status(404).sendFile(path.join(rootDir, "views", "404.html"));
 });
+
 // app.use((req, res) => {
 //   res.status(404).send(`<h1>Page Not Found</h1>
 //     <a href="/">Back to Home page</a>`);

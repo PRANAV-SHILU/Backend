@@ -26,6 +26,8 @@ app.use is default GET METHOD, if you want to use other method like POST, PUT, D
 Routing = sending different responses based on the request URL.
 Since a Node server has one entry function (req, res) => {}, it must check req.url to decide which response to send.
 
+Routes are part of controllers.
+
 Methods:
 - app.get('/api') → matches only GET requests to /api
 - app.post('/api') → matches only POST requests to /api
@@ -47,3 +49,10 @@ EJS - Embedded javascript  - html with js - <%   %>
 <%= %> - output the value of the expression
 ejs partials - reusable ejs templates - <%- include('partial.ejs') %>
 <%- include() %>
+
+res.send() -  
+res.sendFile() - 
+res.render() - 
+
+MVC - Model View Controller - seprate logics 
+
