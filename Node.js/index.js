@@ -3,6 +3,29 @@ import http from "http";
 import Busboy from "busboy";
 import fs from "fs";
 import path from "path";
+import crypto from "crypto";
+import bcrypt from "bcrypt";
+
+
+async function covert(password) {
+  let newPassword;
+
+  // Hash Password using crypto
+  // newPassword = crypto.createHash("sha256").update(password).digest("hex");
+
+  // Hash Password using crypto.createHmac
+  // newPassword = crypto.createHmac("sha256", "SECRETKEY").update(password).digest("hex");
+
+  // Hash Password using bcrypt
+  newPassword = await bcrypt.hash(password, 10);
+
+  console.log("Password Hashed in function:", newPassword);
+
+  // for matching
+  // const isMatch = await bcrypt.compare(inputPassword, user.password);
+
+  return newPassword;
+}
 
 const type = "Content-Type";
 const json = "application/json";
@@ -29,6 +52,12 @@ const server = http.createServer(async (req, res) => {
   if (req.method === "OPTIONS") {
     res.writeHead(204);
     return res.end();
+  }
+
+  if (req.url === "/") {
+    res.writeHead(200, { [type]: json });
+
+    return res.end(JSON.stringify({ message: "Welcome to the Node.js" }));
   }
 
   //GET image
@@ -172,6 +201,7 @@ const server = http.createServer(async (req, res) => {
     let name = "";
     let age = "";
     let email = "";
+    let password = "";
     let imagePath = "";
 
     //  ensure uploads folder exists
@@ -184,6 +214,7 @@ const server = http.createServer(async (req, res) => {
       if (fieldname === "name") name = value;
       if (fieldname === "email") email = value;
       if (fieldname === "age") age = Number(value);
+      if (fieldname === "password") password = value;
     });
 
     //  handle file
@@ -200,17 +231,18 @@ const server = http.createServer(async (req, res) => {
     bb.on("finish", async () => {
       try {
         //  validation
-        if (!name || !email || !age) {
+        if (!name || !email || !age || !password) {
           res.writeHead(400, { [type]: json });
           return res.end(
-            JSON.stringify({ error: "name, email, and age are required" }),
+            JSON.stringify({ error: "name, email, age and password are required" }),
           );
         }
+        const hashedPassword = await covert(password);
 
         const query =
-          "INSERT INTO users (name, email, age, image) VALUES (?, ?, ?, ?)";
+          "INSERT INTO users (name, email, age, password, image) VALUES (?, ?, ?, ?, ?)";
 
-        const [result] = await DB.execute(query, [name, email, age, imagePath]);
+        const [result] = await DB.execute(query, [name, email, age, hashedPassword, imagePath]);
 
         res.statusCode = 201;
         res.setHeader(type, json);
@@ -223,6 +255,7 @@ const server = http.createServer(async (req, res) => {
               name,
               email,
               age,
+              password: hashedPassword,
               image: imagePath,
             },
           }),
@@ -296,12 +329,14 @@ const server = http.createServer(async (req, res) => {
 
       const bb = Busboy({ headers: req.headers });
       let updatedFields = { ...existingUser };
+      let passwordChanged = false;
       let newImagePath = null;
       let filePromises = [];
 
       // Handle fields
       bb.on("field", (name, value) => {
         if (value !== undefined && value !== null) {
+          if (name === "password") passwordChanged = true;
           updatedFields[name] = name === "age" ? Number(value) : value;
         }
       });
@@ -341,12 +376,17 @@ const server = http.createServer(async (req, res) => {
             updatedFields.image = newImagePath;
           }
 
+          if (passwordChanged) {
+            updatedFields.password = await covert(updatedFields.password);
+          }
+
           const query =
-            "UPDATE users SET name=?, email=?, age=?, image=? WHERE id=?";
+            "UPDATE users SET name=?, email=?, age=?, password=?, image=? WHERE id=?";
           await DB.execute(query, [
             updatedFields.name,
             updatedFields.email,
             updatedFields.age,
+            updatedFields.password,
             updatedFields.image,
             id,
           ]);
@@ -379,7 +419,7 @@ const server = http.createServer(async (req, res) => {
 
   // 👉 Route not found
   res.writeHead(404, { [type]: json });
-  res.end(JSON.stringify({ error: "Route Not Found" }));
+  res.end(JSON.stringify({ error: "404 -Route Not Found" }));
 });
 
 server.listen(3000, () => {
