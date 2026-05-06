@@ -96,6 +96,7 @@ function App() {
               <th>Name</th>
               <th>Email</th>
               <th>Age</th>
+              <th>Password</th>
               <th>Action</th>
               <th>Edit</th>
             </tr>
@@ -119,6 +120,7 @@ function App() {
                 <td>{user?.name || "-"}</td>
                 <td>{user?.email || "-"}</td>
                 <td>{user?.age || "-"}</td>
+                <td>{user?.password || "-"}</td>
                 <td>
                   <button
                     className="btn-danger"

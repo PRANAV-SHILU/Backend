@@ -7,6 +7,7 @@ function AddUser() {
     name: "",
     email: "",
     age: "",
+    password: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -115,6 +116,18 @@ function AddUser() {
             onChange={handleChange}
             required
             placeholder="Enter age"
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Password</label>
+          <input
+            name="password"
+            type="password"
+            value={form.password}
+            onChange={handleChange}
+            required
+            placeholder="Enter password"
           />
         </div>
 

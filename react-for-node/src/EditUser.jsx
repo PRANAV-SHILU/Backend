@@ -9,6 +9,7 @@ function EditUser() {
     name: "",
     email: "",
     age: "",
+    password: "",
   });
 
   const [image, setImage] = useState(""); // separate image state
@@ -75,6 +76,7 @@ function EditUser() {
       formData.append("name", form.name);
       formData.append("email", form.email);
       formData.append("age", form.age);
+      formData.append("password", form.password);
 
       // Only send image if user selected new one
       if (image instanceof File) {
@@ -145,6 +147,18 @@ function EditUser() {
             onChange={handleChange}
             required
             placeholder="Enter age"
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Password</label>
+          <input
+            name="password"
+            type="password"
+            value={form.password}
+            onChange={handleChange}
+            required
+            placeholder="Enter password"
           />
         </div>
 
