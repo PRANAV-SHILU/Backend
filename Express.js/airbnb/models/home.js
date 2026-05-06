@@ -12,21 +12,27 @@ export class Home {
     this.price = price;
   }
 
-  save() {
+  save(callback) {
     // first fetch existant then push and write again
     this.id = Math.random();
     Home.fetchAll((homes) => {
       homes.push(this);
-      fs.writeFile(filePath, JSON.stringify(homes), (err) =>
-        console.log("err in writing file", err),
-      );
+      fs.writeFile(filePath, JSON.stringify(homes), (err) => {
+        if (callback) {
+          callback(err);
+        } else {
+          console.log("err in writing file", err);
+        }
+      });
     });
   }
+
   static fetchAll(callback) {
     fs.readFile(filePath, (err, data) => {
       callback(err ? [] : data.length > 0 ? JSON.parse(data) : []);
     });
   }
+
   static fetchFavourites(callback) {
     fs.readFile(favouritesPath, (err, data) => {
       callback(err ? [] : data.length > 0 ? JSON.parse(data) : []);
@@ -51,4 +57,14 @@ export class Home {
       }
     });
   }
+
+  static deleteByID(homeID, callback) {
+    Home.fetchAll((homes) => {
+      const remainigHomes = homes.filter((h) => h.id !== homeID);
+      fs.writeFile(filePath, JSON.stringify(remainigHomes), (err) =>
+        callback(err),
+      );
+    });
+  }
+
 }

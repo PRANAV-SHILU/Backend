@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import rootDir from "../utils/pathUtil.js";
-import { getAddHome, postAddHome, getEditHome, postEditHome } from "../controllers/Homes.controller.js";
+import { getAddHome, postAddHome, getEditHome, postEditHome, deleteHome } from "../controllers/Homes.controller.js";
 
 const hostRouter = express.Router();
 
@@ -13,5 +13,7 @@ hostRouter.get("/edit-home/:id", getEditHome);
 hostRouter.post("/edit-home/:id", postEditHome);
 
 hostRouter.post("/add-home", postAddHome);
+
+hostRouter.delete("/delete-home/:id", deleteHome);
 
 export default hostRouter;

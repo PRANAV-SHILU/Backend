@@ -15,9 +15,17 @@ export class Favourite {
             }
         });
     }
+
     static getFavourites(callback) {
         fs.readFile(filePath, (err, data) => {
             callback(err ? [] : data.length > 0 ? JSON.parse(data) : []);
+        });
+    }
+
+    static deleteFromFavourite(homeID, callback) {
+        Favourite.getFavourites((favourites) => {
+            const remainingFavourites = favourites.filter((id) => id != homeID);
+            fs.writeFile(filePath, JSON.stringify(remainingFavourites), callback);
         });
     }
 }

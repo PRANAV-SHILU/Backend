@@ -31,7 +31,7 @@ export async function getAddHome(req, res) {
 }
 
 export async function getEditHome(req, res) {
-  const homeID = req.params.id;
+  const homeID = Number(req.params.id);
   Home.findByID(homeID, (home) => {
     if (!home) {
       console.log("Home not found");
@@ -47,30 +47,55 @@ export async function getEditHome(req, res) {
 export async function postAddHome(req, res) {
   console.log("Home registered successfully for:", req.body);
   const home = new Home(req.body.name, req.body.location, req.body.price);
-  home.save();
-  res.render("homeAdded", { ...req.body });
+  home.save((error) => {
+    if (error) {
+      console.log("Error in postAddHome", error);
+      res.redirect("/");
+    } else {
+      res.render("homeAdded", { ...req.body });
+    }
+  });
 }
 
 export async function postEditHome(req, res) {
-  const homeID = req.params.id;
+  const homeID = Number(req.params.id);
   Home.editByID(homeID, req.body, (error) => {
-    if (error) console.log("Error is postEditHome", error);
+    if (error) {
+      console.log("Error is postEditHome", error);
+    }
+    res.redirect(`/`);
   });
-  res.redirect(`/`);
 }
 
 export async function postAddToFavourites(req, res) {
   console.log("favourites post", req.body);
-  Favourite.addToFavourite(req.body.id, (error) => {
+  Favourite.addToFavourite(Number(req.body.id), (error) => {
     if (error) console.log("Error is postAddToFavourites", error);
   });
   res.redirect("/favourites");
 }
+
 export async function getFavourites(req, res) {
   Favourite.getFavourites((favourites) => {
     Home.fetchAll((homes) => {
       const favouritesWithDetails = favourites.map(homeID => homes.find(home => home.id == homeID))
       res.render("favourites", { homes: favouritesWithDetails });
     })
+  });
+}
+
+export async function deleteHome(req, res) {
+  const homeID = Number(req.params.id);
+  Home.deleteByID(homeID, (error) => {
+    if (error) {
+      console.log("Error in Home.deleteByID", error);
+      return res.status(500).json({ message: "Error deleting home" });
+    }
+    Favourite.deleteFromFavourite(homeID, (error) => {
+      if (error) {
+        console.log("Error in Favourite.deleteFromFavourite", error);
+      }
+      res.status(200).json({ message: "Home deleted successfully" });
+    });
   });
 }

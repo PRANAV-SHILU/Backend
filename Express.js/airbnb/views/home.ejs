@@ -33,11 +33,30 @@
             </p>
             <a href="/homes/<%=home.id%>">Details</a>
             <a href="/host/edit-home/<%=home.id%>">Edit</a>
+            <button onclick="deleteHome('<%= home.id %>')">Delete</button>
           </li>
           <% }) %>
       </ul>
       <a href="/host/add-home" class="btn">Add Home</a>
     </div>
 </body>
+
+<script>
+  async function deleteHome(id) {
+    console.log("Delete home", id);
+    try {
+      const res = await fetch(`/host/delete-home/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        alert("Home deleted successfully");
+        location.reload();
+      } else {
+        alert("Failed to delete home");
+      }
+    } catch (error) {
+      console.error("Error deleting home:", error);
+      alert("An error occurred while deleting the home");
+    }
+  }
+</script>
 
 </html>
