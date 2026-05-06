@@ -39,4 +39,16 @@ export class Home {
       callback(home);
     });
   }
+
+  static editByID(homeID, updatedHome, callback) {
+    Home.fetchAll((homes) => {
+      const homeIndex = homes.findIndex((h) => h.id == homeID);
+      if (homeIndex !== -1) {
+        homes[homeIndex] = { ...homes[homeIndex], ...updatedHome };
+        fs.writeFile(filePath, JSON.stringify(homes), (err) =>
+          callback(err),
+        );
+      }
+    });
+  }
 }

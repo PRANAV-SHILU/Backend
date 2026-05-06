@@ -30,11 +30,33 @@ export async function getAddHome(req, res) {
   res.render("add-home");
 }
 
+export async function getEditHome(req, res) {
+  const homeID = req.params.id;
+  Home.findByID(homeID, (home) => {
+    if (!home) {
+      console.log("Home not found");
+      res.redirect("/");
+    }
+    // because of static
+    console.log(home);
+    //for ejs
+    res.render("edit-home", { home: home });
+  });
+}
+
 export async function postAddHome(req, res) {
   console.log("Home registered successfully for:", req.body);
   const home = new Home(req.body.name, req.body.location, req.body.price);
   home.save();
   res.render("homeAdded", { ...req.body });
+}
+
+export async function postEditHome(req, res) {
+  const homeID = req.params.id;
+  Home.editByID(homeID, req.body, (error) => {
+    if (error) console.log("Error is postEditHome", error);
+  });
+  res.redirect(`/`);
 }
 
 export async function postAddToFavourites(req, res) {
