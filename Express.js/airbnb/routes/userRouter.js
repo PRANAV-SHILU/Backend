@@ -1,12 +1,18 @@
 import express from "express";
 import rootDir from "../utils/pathUtil.js";
 import path from "path";
+// import {
+//   getFavourites,
+//   getHome,
+//   getHomeByID,
+//   postAddToFavourites,
+// } from "../controllers/Homes.controller.js";
 import {
   getFavourites,
   getHome,
   getHomeByID,
   postAddToFavourites,
-} from "../controllers/Homes.controller.js";
+} from "../controllers/HomesSQL.controller.js";
 
 const userRouter = express.Router();
 

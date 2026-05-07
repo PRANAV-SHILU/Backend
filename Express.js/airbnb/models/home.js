@@ -33,11 +33,7 @@ export class Home {
     });
   }
 
-  static fetchFavourites(callback) {
-    fs.readFile(favouritesPath, (err, data) => {
-      callback(err ? [] : data.length > 0 ? JSON.parse(data) : []);
-    });
-  }
+ 
 
   static findByID(homeID, callback) {
     Home.fetchAll((homes) => {
