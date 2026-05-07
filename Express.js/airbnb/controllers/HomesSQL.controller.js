@@ -1,5 +1,4 @@
 import { Favourite } from "../models/favourites.js";
-// import { Home } from "../models/home.js";
 import { Home } from "../models/homeSQL.js";
 
 export async function getHome(req, res, next) {

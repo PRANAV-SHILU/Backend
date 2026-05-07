@@ -6,7 +6,7 @@ import path from "path";
 //   getHome,
 //   getHomeByID,
 //   postAddToFavourites,
-// } from "../controllers/Homes.controller.js";
+// } from "../controllers/HomesFILE.controller.js";
 import {
   getFavourites,
   getHome,

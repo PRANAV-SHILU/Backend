@@ -1,5 +1,5 @@
 import { Favourite } from "../models/favourites.js";
-import { Home } from "../models/home.js";
+import { Home } from "../models/homeFILE.js";
 
 export async function getHome(req, res, next) {
   // due to callback
