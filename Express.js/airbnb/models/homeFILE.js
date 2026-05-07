@@ -3,7 +3,6 @@ import path from "path";
 import rootDir from "../utils/pathUtil.js";
 
 const filePath = path.join(rootDir, "data", "homes.json");
-const favouritesPath = path.join(rootDir, "data", "favourites.json");
 
 export class Home {
   constructor(name, location, price) {
