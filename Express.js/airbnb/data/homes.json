@@ -1,1 +1,14 @@
-[{"name":"Pranav","location":"Pranav","price":"100","id":0.6348448071862374},{"name":"shilu","location":"shilu","price":"200","id":0.17563739518772026}]
+[
+  {
+    "name": "Pranav",
+    "location": "Pranav",
+    "price": "100",
+    "id": 0.6348448071862374
+  },
+  {
+    "name": "shilu",
+    "location": "shilu",
+    "price": "200",
+    "id": 0.17563739518772026
+  }
+]
