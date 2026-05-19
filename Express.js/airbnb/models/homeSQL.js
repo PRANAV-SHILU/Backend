@@ -1,4 +1,4 @@
-import db from "../utils/databaseUtil.js";
+import db from "../utils/databaseUtilSQL.js";
 
 export class Home {
   constructor(name, location, price) {

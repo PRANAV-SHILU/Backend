@@ -3,7 +3,7 @@ import userRouter from "./routes/userRouter.js";
 import hostRouter from "./routes/hostRouter.js";
 import path from "path";
 import rootDir from "./utils/pathUtil.js";
-import db from "./utils/databaseUtil.js";
+import db from "./utils/databaseUtilSQL.js";
 
 // promise way
 // db.execute("SELECT * FROM homes").then((rows) => console.log("Data from sql", rows)).catch(err => console.log("error while creating serevr", err));
