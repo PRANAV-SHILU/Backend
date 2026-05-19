@@ -9,8 +9,8 @@ if (!MONGO_URL) {
 
 const mongoConnect = (calback) => {
     mongoClient.connect(MONGO_URL).then((client) => {
-        console.log("MONGO CLIENT on connecting", client);
-        return client;
+        console.log("Entered mongoconnect function");
+        calback(client);
     }).catch((err) => {
         console.log("MONGO ERROR on connecting", err);
     });
