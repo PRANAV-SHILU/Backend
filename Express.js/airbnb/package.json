@@ -16,6 +16,7 @@
     "nodemon": "^3.1.14"
   },
   "dependencies": {
+    "dotenv": "^17.4.2",
     "ejs": "^5.0.2",
     "eslint": "^10.2.1",
     "express": "^5.2.1",

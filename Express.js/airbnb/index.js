@@ -1,16 +1,19 @@
+import "dotenv/config";
 import express from "express";
 import userRouter from "./routes/userRouter.js";
 import hostRouter from "./routes/hostRouter.js";
 import path from "path";
 import rootDir from "./utils/pathUtil.js";
 import db from "./utils/databaseUtilSQL.js";
+import mongoConnect from "./utils/databaseUtilMONGO.js";
 
 // promise way
 // db.execute("SELECT * FROM homes").then((rows) => console.log("Data from sql", rows)).catch(err => console.log("error while creating serevr", err));
 
+// FOR SQL
 // async-await way
-const [data] = await db.execute("SELECT * FROM homes");
-console.log("Server started by await", data);
+// const [data] = await db.execute("SELECT * FROM homes");
+// console.log("Server started by await", data);
 
 
 
@@ -41,6 +44,10 @@ app.use((req, res) => {
 //     <a href="/">Back to Home page</a>`);
 // });
 
-app.listen(3000, () => {
-  console.log("🚀 Server running on http://localhost:3000");
+mongoConnect(client => {
+  app.listen(3000, () => {
+    console.log("🚀 Server running on http://localhost:3000");
+  });
 });
+
+
