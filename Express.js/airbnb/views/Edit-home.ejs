@@ -10,7 +10,7 @@
     <%- include('partials/header') %>
     <div class="container">
       <h1 class="page-title">Edit your home</h1>
-      <form action="/host/edit-home/<%= home.id %>" method="POST">
+      <form action="/host/edit-home/<%= home._id %>" method="POST">
         <label for="name">Home Name:</label>
         <input type="text" id="name" name="name" value="<%= home.name %>" required />
         <label for="location">Location:</label>

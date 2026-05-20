@@ -7,12 +7,19 @@ import path from "path";
 //   getHomeByID,
 //   postAddToFavourites,
 // } from "../controllers/HomesFILE.controller.js";
+
+// import {
+//   getFavourites,
+//   getHome,
+//   getHomeByID,
+//   postAddToFavourites,
+// } from "../controllers/HomesSQL.controller.js";
 import {
   getFavourites,
   getHome,
   getHomeByID,
   postAddToFavourites,
-} from "../controllers/HomesSQL.controller.js";
+} from "../controllers/HomesMONGO.controller.js";
 
 const userRouter = express.Router();
 

@@ -19,14 +19,14 @@
                             <%= home.name %>
                         </h3>
                         <p>
-                            <%= home.id %>
+                            <%= home._id %>
                         </p>
                         <p>
                             <%= home.location %>
                         </p>
                         <p>Price per night: $<%= home.price %>
                         </p>
-                        <a href="/homes/<%=home.id%>">Details</a>
+                        <a href="/homes/<%=home._id%>">Details</a>
                     </li>
                     <% }) %>
             </ul>

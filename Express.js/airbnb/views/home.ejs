@@ -20,7 +20,7 @@
               <%= home.name %>
             </h3>
             <p>
-              <%= home.id %>
+              <%= home._id %>
             </p>
             <p>
               <%= home.location %>
@@ -31,9 +31,9 @@
               <!-- passed variable of home  -->
               <%- include('partials/favourites', {home:home} ) %>
             </p>
-            <a href="/homes/<%=home.id%>">Details</a>
-            <a href="/host/edit-home/<%=home.id%>">Edit</a>
-            <button onclick="deleteHome('<%= home.id %>')">Delete</button>
+            <a href="/homes/<%=home._id%>">Details</a>
+            <a href="/host/edit-home/<%=home._id%>">Edit</a>
+            <button onclick="deleteHome('<%= home._id %>')">Delete</button>
           </li>
           <% }) %>
       </ul>

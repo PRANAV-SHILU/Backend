@@ -44,8 +44,7 @@ app.use((req, res) => {
 //     <a href="/">Back to Home page</a>`);
 // });
 
-mongoConnect(client => {
-  console.log("MONGO CLIENT on connecting", client);
+mongoConnect(() => {
   app.listen(3000, () => {
     console.log("🚀 Server running on http://localhost:3000");
   });
