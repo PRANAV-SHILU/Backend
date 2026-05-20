@@ -55,20 +55,28 @@ export async function postEditHome(req, res) {
 
 export async function postAddToFavourites(req, res) {
   console.log("favourites post", req.body);
-  const favourite = new Favourite(req.body.id);
-  favourite.save().then((result) => {
-    console.log("Home added to favourites successfully", result);
-  }).catch(err => console.log("Error is postAddToFavourites", err)).
-    finally(() => {
-      res.redirect("/favourites");
-    });
 
+  //check if home is already in favourites or not, if not then add to favourites
+  const homeID = req.body.id;
+  Favourite.getFavourites().then((favourites) => {
+    const isFavourite = favourites.some(fav => String(fav.houseId) === String(homeID));
+    if (!isFavourite) {
+      const favourite = new Favourite(homeID);
+      favourite.save().then((result) => {
+        console.log("Home added to favourites successfully", result);
+      }).catch(err => console.log("Error is postAddToFavourites", err));
+    }
+  }).catch(err => console.log("Error is postAddToFavourites", err)).finally(() => {
+    res.redirect("/favourites");
+  });
 }
 
 export async function getFavourites(req, res) {
-  Favourite.getFavourites((favourites) => {
+  Favourite.getFavourites().then((favourites) => {
+    favourites = favourites.map(fav => String(fav.houseId));
     Home.fetchAll().then((homes) => {
-      const favouritesWithDetails = favourites.map(homeID => homes.find(home => home._id == new ObjectId(String(homeID))));
+      console.log(favourites, homes);
+      const favouritesWithDetails = homes.filter(home => favourites.includes(String(home._id)));
       console.log("favourite With Details", favouritesWithDetails);
       res.render("favourites", { homes: favouritesWithDetails });
     }).catch(err => console.log(err));
@@ -77,12 +85,13 @@ export async function getFavourites(req, res) {
 
 export async function deleteHome(req, res) {
   const homeID = req.params.id;
-  Home.deleteByID(homeID).then(() => {
-    Favourite.deleteFromFavourite(homeID, (error) => {
-      if (error) {
-        console.log("Error in Favourite.deleteFromFavourite", error);
-      }
+  Home.deleteByID(homeID)
+    .then(() => Favourite.deleteFromFavourite(homeID))
+    .then(() => {
       res.status(200).json({ message: "Home deleted successfully" });
+    })
+    .catch(err => {
+      console.log("Error deleting home or favourite", err);
+      res.status(500).json({ message: "Could not delete home" });
     });
-  }).catch(err => console.log(err));
 }
