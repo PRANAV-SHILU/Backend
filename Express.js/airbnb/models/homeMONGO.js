@@ -25,11 +25,13 @@ export class Home {
     }
 
     static editByID(homeID, updatedHome) {
-
+        const db = getDB();
+        return db.collection("homes").updateOne({ _id: new ObjectId(String(homeID)) }, { $set: updatedHome });
     }
 
     static deleteByID(homeID) {
-
+        const db = getDB();
+        return db.collection("homes").deleteOne({ _id: new ObjectId(String(homeID)) });
     }
 
 }

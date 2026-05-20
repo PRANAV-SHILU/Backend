@@ -1,4 +1,5 @@
-import { Favourite } from "../models/favourites.js";
+import { ObjectId } from "mongodb";
+import { Favourite } from "../models/favouritesMONGO.js";
 import { Home } from "../models/homeMONGO.js";
 
 export async function getHome(req, res, next) {
@@ -26,13 +27,13 @@ export async function getAddHome(req, res) {
 }
 
 export async function getEditHome(req, res) {
-  const homeID = Number(req.params.id);
+  const homeID = req.params.id;
   Home.findByID(homeID).then((homeData) => {
     if (!homeData) {
       console.log("Home not found");
       res.redirect("/");
     }
-    res.render("edit-home", { home: rows[0] });
+    res.render("edit-home", { home: homeData });
   }).catch(err => console.log(err));
 }
 
@@ -46,7 +47,7 @@ export async function postAddHome(req, res) {
 }
 
 export async function postEditHome(req, res) {
-  const homeID = Number(req.params.id);
+  const homeID = req.params.id;
   Home.editByID(homeID, req.body).then(() => {
     res.redirect(`/`);
   }).catch(err => console.log("Error is postEditHome", err));
@@ -54,7 +55,7 @@ export async function postEditHome(req, res) {
 
 export async function postAddToFavourites(req, res) {
   console.log("favourites post", req.body);
-  Favourite.addToFavourite(Number(req.body.id), (error) => {
+  Favourite.addToFavourite(req.body.id, (error) => {
     if (error) console.log("Error is postAddToFavourites", error);
   });
   res.redirect("/favourites");
@@ -63,7 +64,7 @@ export async function postAddToFavourites(req, res) {
 export async function getFavourites(req, res) {
   Favourite.getFavourites((favourites) => {
     Home.fetchAll().then((homes) => {
-      const favouritesWithDetails = favourites.map(homeID => homes.find(home => home._id == homeID));
+      const favouritesWithDetails = favourites.map(homeID => homes.find(home => home._id == new ObjectId(String(homeID))));
       console.log("favourite With Details", favouritesWithDetails);
       res.render("favourites", { homes: favouritesWithDetails });
     }).catch(err => console.log(err));
@@ -71,7 +72,7 @@ export async function getFavourites(req, res) {
 }
 
 export async function deleteHome(req, res) {
-  const homeID = Number(req.params.id);
+  const homeID = req.params.id;
   Home.deleteByID(homeID).then(() => {
     Favourite.deleteFromFavourite(homeID, (error) => {
       if (error) {
