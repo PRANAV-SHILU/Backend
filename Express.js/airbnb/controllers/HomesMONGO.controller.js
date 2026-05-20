@@ -55,10 +55,14 @@ export async function postEditHome(req, res) {
 
 export async function postAddToFavourites(req, res) {
   console.log("favourites post", req.body);
-  Favourite.addToFavourite(req.body.id, (error) => {
-    if (error) console.log("Error is postAddToFavourites", error);
-  });
-  res.redirect("/favourites");
+  const favourite = new Favourite(req.body.id);
+  favourite.save().then((result) => {
+    console.log("Home added to favourites successfully", result);
+  }).catch(err => console.log("Error is postAddToFavourites", err)).
+    finally(() => {
+      res.redirect("/favourites");
+    });
+
 }
 
 export async function getFavourites(req, res) {

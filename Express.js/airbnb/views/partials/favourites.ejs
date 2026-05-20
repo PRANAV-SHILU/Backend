@@ -1,4 +1,8 @@
 <form action="/favourites" method="post">
-    <input type="number" name="id" value="<%= home._id %>" hidden>
-    <button type="submit" class="btn">Favoutite</button>
+  <!-- <input type="hidden" name="id" value="<%= home._id %>"> -->
+
+  <!-- for mongo -->
+  <input type="hidden" name="id" value="<%= home._id %>" />
+
+  <button type="submit" class="btn">Favourite</button>
 </form>

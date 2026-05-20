@@ -22,7 +22,7 @@
             <p>Price per night: $<%= home.price %>
             </p>
             <p>
-                <%- include('partials/favourites') %>
+                <%- include('partials/favourites', {home:home}) %>
             </p>
             <p>
                 <a href="/" class="btn">Go back to Home</a>
