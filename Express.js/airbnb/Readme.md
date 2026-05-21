@@ -6,3 +6,5 @@ _id : new ObjectId(String(homeID))
 sql
 
 mongodb - mongoose
+
+mongoos expect object inside the constructor, so we need to pass an object with the properties name, location and price instead of passing them as separate arguments.

@@ -19,7 +19,13 @@ import {
   getHome,
   getHomeByID,
   postAddToFavourites,
-} from "../controllers/HomesMONGO.controller.js";
+} from "../controllers/HomesMONGOOSE.controller.js";
+// import {
+//   getFavourites,
+//   getHome,
+//   getHomeByID,
+//   postAddToFavourites,
+// } from "../controllers/HomesMONGO.controller.js";
 
 const userRouter = express.Router();
 

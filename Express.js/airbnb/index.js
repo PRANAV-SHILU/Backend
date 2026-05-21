@@ -45,6 +45,8 @@ app.use((req, res) => {
 //     <a href="/">Back to Home page</a>`);
 // });
 
+
+// for mongoDB
 // mongoConnect(() => {
 //   app.listen(3000, () => {
 //     console.log("🚀 Server running on http://localhost:3000");

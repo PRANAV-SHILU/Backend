@@ -5,7 +5,8 @@ import rootDir from "../utils/pathUtil.js";
 
 // import { getAddHome, postAddHome, getEditHome, postEditHome, deleteHome } from "../controllers/HomesSQL.controller.js";
 
-import { getAddHome, postAddHome, getEditHome, postEditHome, deleteHome } from "../controllers/HomesMONGO.controller.js";
+import { getAddHome, postAddHome, getEditHome, postEditHome, deleteHome } from "../controllers/HomesMONGOOSE.controller.js";
+// import { getAddHome, postAddHome, getEditHome, postEditHome, deleteHome } from "../controllers/HomesMONGO.controller.js";
 
 const hostRouter = express.Router();
 
