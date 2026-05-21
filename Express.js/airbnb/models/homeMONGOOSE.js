@@ -8,3 +8,4 @@ const homeSchema = new mongoose.Schema({
 })
 
 export default mongoose.model("Home", homeSchema);
+
