@@ -17,7 +17,6 @@ findByIdAndUpdate() - update by id
 findByIdAndDelete() - delete by id
 
 
-
 MONGODB
 insertOne() - insert 
 find() - search select all
@@ -25,3 +24,5 @@ findOne() - search select one
 updateOne() - update one
 deleteOne() - delete one
 toArray() - convert cursor to array
+findOneAndUpdate() - update one and return the updated document
+findOneAndDelete() - delete one and return the deleted document

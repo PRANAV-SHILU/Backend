@@ -1,5 +1,5 @@
-import { ObjectId } from "mongodb";
-import FavouriteMONGOOSE  from "../models/favouritesMONGOOSE.js";
+import mongoose from "mongoose";
+import FavouriteMONGOOSE from "../models/favouritesMONGOOSE.js";
 import homeMONGOOSE from "../models/homeMONGOOSE.js";
 
 export async function getHome(req, res, next) {
@@ -58,25 +58,35 @@ export async function postEditHome(req, res) {
 }
 
 export async function postAddToFavourites(req, res) {
-    console.log("favourites post", req.body);
+    try {
+        console.log("favourites post", req.body);
+        const homeID = new mongoose.Types.ObjectId(req.body.id);
+        console.log("Converted homeID:", homeID);
 
-    //check if home is already in favourites or not, if not then add to favourites
-    const homeID = req.body.id;
-    FavouriteMONGOOSE.getFavourites().then((favourites) => {
-        const isFavourite = favourites.some(fav => String(fav.houseId) === String(homeID));
-        if (!isFavourite) {
-            const favourite = new Favourite(homeID);
-            FavouriteMONGOOSE.save().then((result) => {
-                console.log("Home added to favourites successfully", result);
-            }).catch(err => console.log("Error is postAddToFavourites", err));
+        //check if home is already in favourites or not, if not then add to favourites
+        const existingFav = await FavouriteMONGOOSE.findOne({ houseId: homeID });
+        
+        if (existingFav) {
+            console.log("Home is already in favourites");
+            return res.redirect("/favourites");
         }
-    }).catch(err => console.log("Error is postAddToFavourites", err)).finally(() => {
+        
+        const favourite = new FavouriteMONGOOSE({ houseId: homeID });
+        console.log("Favourite object created:", favourite);
+        
+        const savedFav = await favourite.save();
+        console.log("Home added to favourites successfully:", savedFav);
         res.redirect("/favourites");
-    });
+        
+    } catch (err) {
+        console.log("Error in postAddToFavourites:", err.message);
+        console.log("Full error:", err);
+        res.redirect("/favourites");
+    }
 }
 
 export async function getFavourites(req, res) {
-    FavouriteMONGOOSE.getFavourites().then((favourites) => {
+    FavouriteMONGOOSE.find().then((favourites) => {
         favourites = favourites.map(fav => String(fav.houseId));
         homeMONGOOSE.find().then((homes) => {
             console.log(favourites, homes);
@@ -90,7 +100,7 @@ export async function getFavourites(req, res) {
 export async function deleteHome(req, res) {
     const homeID = req.params.id;
     homeMONGOOSE.findByIdAndDelete(homeID)
-        .then(() => FavouriteMONGOOSE.deleteFromFavourite(homeID))
+        .then(() => FavouriteMONGOOSE.findOneAndDelete({ houseId: homeID }))
         .then(() => {
             res.status(200).json({ message: "Home deleted successfully" });
         })
