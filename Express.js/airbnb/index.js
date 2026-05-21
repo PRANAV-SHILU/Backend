@@ -6,6 +6,7 @@ import path from "path";
 import rootDir from "./utils/pathUtil.js";
 import db from "./utils/databaseUtilSQL.js";
 import mongoConnect from "./utils/databaseUtilMONGO.js";
+import mongoose from "mongoose";
 
 // promise way
 // db.execute("SELECT * FROM homes").then((rows) => console.log("Data from sql", rows)).catch(err => console.log("error while creating serevr", err));
@@ -44,10 +45,17 @@ app.use((req, res) => {
 //     <a href="/">Back to Home page</a>`);
 // });
 
-mongoConnect(() => {
+// mongoConnect(() => {
+//   app.listen(3000, () => {
+//     console.log("🚀 Server running on http://localhost:3000");
+//   });
+// });
+
+mongoose.connect(process.env.MONGO_URL_FOR_MONGOOSE).then(() => {
+  console.log("connected to mongo");
   app.listen(3000, () => {
     console.log("🚀 Server running on http://localhost:3000");
   });
+}).catch((err) => {
+  console.log("error while connecting to mongo", err);
 });
-
-
