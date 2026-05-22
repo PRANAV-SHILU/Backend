@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import favouritesMONGOOSE from "./favouritesMONGOOSE";
+import favouritesMONGOOSE from "./favouritesMONGOOSE.js";
 
 // basic validation for home model
 const homeSchema = new mongoose.Schema({
@@ -9,18 +9,10 @@ const homeSchema = new mongoose.Schema({
 })
 
 // pre hook for delete home and associated favourites
-// homeSchema.pre('findOneAndDelete', async function(next) {
-//     try {
-//         const homeId = this.getQuery()["_id"];
-//         console.log("Home ID to be deleted:", homeId);
-//         await favouritesMONGOOSE.deleteMany({ houseId: homeId });
-//         console.log("Associated favourites deleted successfully");
-//         next();
-//     } catch (err) {
-//         console.log("Error in pre 'findOneAndDelete' middleware:", err);
-//         next(err);
-//     }
-// });
+homeSchema.pre('findOneAndDelete', async function () {
+    const homeID = this.getQuery()["_id"];
+    await favouritesMONGOOSE.deleteMany({ houseId: homeID });
+});
 
 export default mongoose.model("Home", homeSchema);
 

@@ -26,3 +26,6 @@ deleteOne() - delete one
 toArray() - convert cursor to array
 findOneAndUpdate() - update one and return the updated document
 findOneAndDelete() - delete one and return the deleted document
+
+
+pre hooks is like middleware that runs on certain events like save, update, delete etc. 
