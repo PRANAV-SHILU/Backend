@@ -86,15 +86,11 @@ export async function postAddToFavourites(req, res) {
 }
 
 export async function getFavourites(req, res) {
-    FavouriteMONGOOSE.find().then((favourites) => {
-        favourites = favourites.map(fav => String(fav.houseId));
-        homeMONGOOSE.find().then((homes) => {
-            console.log(favourites, homes);
-            const favouritesWithDetails = homes.filter(home => favourites.includes(String(home._id)));
-            console.log("favourite With Details", favouritesWithDetails);
-            res.render("favourites", { homes: favouritesWithDetails });
-        }).catch(err => console.log(err));
-    });
+    FavouriteMONGOOSE.find().populate("houseId").then((favourites) => {
+        const favouritesWithDetails = favourites.map(fav => fav.houseId);
+        console.log("favourite", favouritesWithDetails);
+        res.render("favourites", { homes: favouritesWithDetails });
+    }).catch(err => console.log(err));
 }
 
 export async function deleteHome(req, res) {
