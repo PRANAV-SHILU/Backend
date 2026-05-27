@@ -4,9 +4,14 @@
   </div>
   <nav>
     <a href="/">Home</a>
-    <a href="/host/add-home">Add Home</a>
-    <a href="/favourites">favourites</a>
-    <a href="/login">Login</a>
+    
+    <% if(isLoggedIn) { %>
+      <a href="/host/add-home">Add Home</a>
+      <a href="/favourites">favourites</a>
+      <a href="/auth/logout">Logout</a>
+    <% } else { %>
+      <a href="/auth/login">Login</a>
+    <% } %>
     <a href="/404">404</a>
   </nav>
 </header>

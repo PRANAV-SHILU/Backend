@@ -5,7 +5,7 @@ import homeMONGOOSE from "../models/homeMONGOOSE.js";
 export async function getHome(req, res, next) {
     homeMONGOOSE.find().then((homesData) => {
         console.log("fetchAll MONGOOSE", homesData);
-        res.render("home", { homes: homesData });
+        res.render("home", { homes: homesData, isLoggedIn: req.isLoggedIn });
     }).catch(err => console.log(err));
 }
 
@@ -17,13 +17,13 @@ export async function getHomeByID(req, res) {
             res.redirect("/");
         }
         console.log(homeData);
-        res.render("home-detail", { home: homeData });
+        res.render("home-detail", { home: homeData, isLoggedIn: req.isLoggedIn });
     }).catch(err => console.log(err));
 }
 
 export async function getAddHome(req, res) {
     // res.sendFile(path.join(rootDir, "views", "add-home.html"));
-    res.render("add-home");
+    res.render("add-home", {isLoggedIn: req.isLoggedIn});
 }
 
 export async function getEditHome(req, res) {
@@ -42,7 +42,7 @@ export async function postAddHome(req, res) {
     const home = new homeMONGOOSE({ name: req.body.name, location: req.body.location, price: req.body.price });
     home.save().then(() => {
         console.log("Home added successfully");
-        res.render("homeAdded", { ...req.body });
+        res.render("homeAdded", { ...req.body, isLoggedIn: req.isLoggedIn });
     }).catch(err => console.log("Error is postAddHome", err));
 }
 
@@ -89,7 +89,7 @@ export async function getFavourites(req, res) {
     FavouriteMONGOOSE.find().populate("houseId").then((favourites) => {
         const favouritesWithDetails = favourites.map(fav => fav.houseId);
         console.log("favourite", favouritesWithDetails);
-        res.render("favourites", { homes: favouritesWithDetails });
+        res.render("favourites", { homes: favouritesWithDetails, isLoggedIn: req.isLoggedIn });
     }).catch(err => console.log(err));
 }
 

@@ -33,9 +33,25 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(rootDir, "public"))); //for css file
 app.use(express.urlencoded()); // getting and parsing body for POST
 
+// middlewear for cookies
+app.use((req, res, next) => {
+  console.log("cookies", req.get("Cookie"));
+  req.isLoggedIn = req.get("Cookie")?.split('=')[1] === "true" || false;
+  next();
+})
+
 app.use("/", userRouter);
+
+// middlewear checks cookie in req set by previous middleware
+app.use("/host", (req, res, next) => {
+  if (!req.isLoggedIn) {
+    return res.redirect("/login");
+  }
+  next();
+});
+
 app.use("/host", hostRouter);
-app.use("/login",authRouter);
+app.use("/auth", authRouter);
 
 // if none of above routes matches then this default 404, must be at below
 app.use((req, res) => {

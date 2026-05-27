@@ -29,3 +29,13 @@ find().populate("houseId")
 
 
 pre hooks is like middleware that runs on certain events like save, update, delete etc. 
+
+
+
+
+cookies are small pieces of data that are stored on the client side and sent to the server with every request. They are used for authentication, session management, and storing user preferences. In Express.js, we can use the cookie-parser middleware to parse cookies and access them in our routes. We can also set cookies using the res.cookie() method.
+
+use default middlewear to attach coockie in every request like req.isLoggedIn = req.get("Cookie")?.split('=')[1] === "true" || false; so that we can use it in any route without checking for cookie every time.
+ we can simply get req.isLoggedIn in any route to check if the user is logged in or not.
+
+ 
