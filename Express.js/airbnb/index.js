@@ -8,6 +8,11 @@ import rootDir from "./utils/pathUtil.js";
 import db from "./utils/databaseUtilSQL.js";
 import mongoConnect from "./utils/databaseUtilMONGO.js";
 import mongoose from "mongoose";
+import session from "express-session"
+import MongoDBStore from "connect-mongodb-session";
+
+// connect-mongodb-session is used to store session in mongoDB, so that even if server restarts, session will be there in DB and user will not be logged out.
+const MongoStore = MongoDBStore(session);
 
 // promise way
 // db.execute("SELECT * FROM homes").then((rows) => console.log("Data from sql", rows)).catch(err => console.log("error while creating serevr", err));
@@ -18,8 +23,8 @@ import mongoose from "mongoose";
 // console.log("Server started by await", data);
 
 
-
 const app = express();
+
 // for EJS, MUST REQUIRED
 app.set("view engine", "ejs");
 app.set("views", "views"); // define html folder at right
@@ -27,16 +32,30 @@ app.set("views", "views"); // define html folder at right
 // default middlewear for console
 app.use((req, res, next) => {
   console.log(req.url, req.method);
+  console.log("session", req.session);
   next();
 });
 
 app.use(express.static(path.join(rootDir, "public"))); //for css file
 app.use(express.urlencoded()); // getting and parsing body for POST
+// express-session 
+app.use(session({
+  secret: "pranav secret key",
+  resave: false,
+  saveUninitialized: true,
+  // store session in mongoDB by connect-mongodb-session
+  store: new MongoStore({
+    uri: process.env.MONGO_URL_FOR_MONGOOSE,
+    collection: "sessions"
+  })
+}))
 
-// middlewear for cookies
+// middlewear for cookies & session
 app.use((req, res, next) => {
   console.log("cookies", req.get("Cookie"));
-  req.isLoggedIn = req.get("Cookie")?.split('=')[1] === "true" || false;
+  console.log("session", req.session, req.session.isLoggedIn);
+  // req.isLoggedIn = req.get("Cookie")?.split('=')[1] === "true" || false;
+  req.isLoggedIn = req.session.isLoggedIn || false;
   next();
 })
 

@@ -9,7 +9,8 @@ export async function postLoginPage(req, res) {
     try {
         const { email, password } = req.body;
         console.log("login data", email, password);
-        res.cookie("isLoggedIn", true);
+        req.session.isLoggedIn = true;
+        // res.cookie("isLoggedIn", true);
         res.redirect("/")
 
         // const isExists = await auth.findOne({ email: email })
@@ -32,8 +33,14 @@ export async function postLoginPage(req, res) {
 }
 
 export async function logout(req, res) {
-    res.cookie("isLoggedIn", false);
+    // res.cookie("isLoggedIn", false);
     // res.clearCookie("isLoggedIn");
-    console.log("User loggedout");
-    res.redirect("/auth/login");
+
+    req.session.destroy(() => {
+        console.log("User loggedout");
+        res.redirect("/auth/login");
+    })
+
+    // console.log("User loggedout");
+    // res.redirect("/auth/login");
 }

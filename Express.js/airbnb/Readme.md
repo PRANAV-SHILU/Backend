@@ -39,3 +39,8 @@ use default middlewear to attach coockie in every request like req.isLoggedIn = 
  we can simply get req.isLoggedIn in any route to check if the user is logged in or not.
 
  
+
+
+ express-session: It is a middleware that allows us to manage user sessions in our Express.js application. It stores session data on the server side and uses cookies to identify the session on the client side. We can configure it with options like secret, resave, saveUninitialized, and store. The store option allows us to specify where to store the session data, and we can use connect-mongodb-session to store it in MongoDB.
+
+ connect-mongodb-session: It is a MongoDB-based session store for Express.js. It allows us to store session data in a MongoDB database, which is useful for scalability and persistence. We can configure it with options like uri and collection to specify the MongoDB connection string and the collection name where the sessions will be stored.
