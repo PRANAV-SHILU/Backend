@@ -45,7 +45,7 @@ app.use("/", userRouter);
 // middlewear checks cookie in req set by previous middleware
 app.use("/host", (req, res, next) => {
   if (!req.isLoggedIn) {
-    return res.redirect("/login");
+    return res.redirect("/auth/login");
   }
   next();
 });
