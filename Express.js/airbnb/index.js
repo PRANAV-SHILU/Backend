@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import userRouter from "./routes/userRouter.js";
 import hostRouter from "./routes/hostRouter.js";
+import authRouter from "./routes/authRouter.js";
 import path from "path";
 import rootDir from "./utils/pathUtil.js";
 import db from "./utils/databaseUtilSQL.js";
@@ -34,6 +35,7 @@ app.use(express.urlencoded()); // getting and parsing body for POST
 
 app.use("/", userRouter);
 app.use("/host", hostRouter);
+app.use("/login",authRouter);
 
 // if none of above routes matches then this default 404, must be at below
 app.use((req, res) => {
