@@ -4,39 +4,150 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Home Added</title>
+  <title>Home Added Successfully - Airbnb</title>
   <link rel="stylesheet" href="/css/style.css">
   <style>
-    h1 {
-      color: #28a745;
-      font-size: 2rem;
-      margin-bottom: 20px;
+    .success-page {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: calc(100vh - var(--header-height));
+      padding: 60px 20px;
     }
 
-    p {
-      font-size: 1.2rem;
-      color: #555;
-      margin-bottom: 30px;
-      padding: 15px;
-      background: #f8f9fa;
-      border-radius: 10px;
-      border-left: 4px solid #28a745;
+    .success-card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border-color);
+      padding: 60px 50px;
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+      animation: slideUp 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) both;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #d4edda, #a8d5b5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      margin: 0 auto 30px;
+      box-shadow: 0 0 0 12px rgba(40, 167, 69, 0.1);
+      animation: pop 0.6s 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes pop {
+      from { transform: scale(0); }
+      to   { transform: scale(1); }
+    }
+
+    .success-title {
+      font-size: 2rem;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+
+    .success-subtitle {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+    }
+
+    .property-summary {
+      background: var(--bg-color);
+      border-radius: var(--radius-md);
+      padding: 25px 30px;
+      margin-bottom: 40px;
+      text-align: left;
+      border: 1px solid var(--border-color);
+    }
+
+    .property-summary h3 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .summary-item:last-child {
+      border-bottom: none;
+    }
+
+    .summary-label {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .summary-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .summary-value.price {
+      color: var(--primary);
+      font-size: 1.1rem;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
     }
   </style>
 </head>
 
 <body>
   <%- include('partials/header') %>
-    <div class="container">
-      <h1>Home added successfully!</h1>
-      <p>Home Name: <%= name %>
-      </p>
-      <p>Location: <%= location %>
-      </p>
-      <p>Price per night: $<%= price %>
-      </p>
-      <a href="/" class="btn">Go back to Home</a>
+
+  <main class="success-page">
+    <div class="success-card">
+      <div class="success-icon">✓</div>
+
+      <h1 class="success-title">Home Listed!</h1>
+      <p class="success-subtitle">Your property has been added successfully and is now visible to guests.</p>
+
+      <div class="property-summary">
+        <h3>Property Summary</h3>
+        <div class="summary-item">
+          <span class="summary-label">🏠 Home Name</span>
+          <span class="summary-value"><%= name %></span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">📍 Location</span>
+          <span class="summary-value"><%= location %></span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">💰 Price per Night</span>
+          <span class="summary-value price">$<%= price %></span>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <a href="/host/add-home" class="btn btn-outline">Add Another</a>
+        <a href="/" class="btn btn-primary">Go to Listings</a>
+      </div>
     </div>
+  </main>
 </body>
 
 </html>

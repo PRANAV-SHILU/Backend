@@ -1,33 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home detail page</title>
+    <title><%= home.name %> - Airbnb</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
-
 <body>
     <%- include('partials/header') %>
-
+    
+    <main>
         <div class="container">
-            <h1>Home Details found!</h1>
-            <p>Home ID: <%= home._id %>
-            </p>
-            <p>Home Name: <%= home.name %>
-            </p>
-            <p>Location: <%= home.location %>
-            </p>
-            <p>Price per night: $<%= home.price %>
-            </p>
-            <p>
-                <%- include('partials/favourites', {home:home}) %>
-            </p>
-            <p>
-                <a href="/" class="btn">Go back to Home</a>
-            </p>
+            <div style="margin-bottom: 20px;">
+                <a href="/" class="btn btn-outline btn-sm">← Back to Home</a>
+            </div>
+            
+            <div class="hero-detail" style="flex-direction: column;">
+                <div class="hero-detail-content" style="flex: unset;">
+                    <h1 class="hero-detail-title"><%= home.name %></h1>
+                    <div class="hero-detail-meta">
+                        <span>📍 <%= home.location %></span>
+                        <span>ID: <%= home._id %></span>
+                    </div>
+                    
+                    <div class="hero-detail-price">
+                        $<%= home.price %> <span style="font-size:1rem; color:var(--text-muted); font-weight:normal;">/ night</span>
+                    </div>
+                    
+                    <div style="margin-bottom: 30px;">
+                        <h3>About this space</h3>
+                        <p>Enjoy your stay at this wonderful property located in the heart of <%= home.location %>. It offers a comfortable and memorable experience for all guests.</p>
+                    </div>
+                    
+                    <div>
+                        <%- include('partials/favourites', {home:home}) %>
+                    </div>
+                </div>
+            </div>
         </div>
+    </main>
 </body>
-
 </html>

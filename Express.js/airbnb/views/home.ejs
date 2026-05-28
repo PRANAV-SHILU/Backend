@@ -4,59 +4,64 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Home</title>
+  <title>Airbnb - Home</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
   <%- include('partials/header') %>
+  
+  <main>
     <div class="container">
-      <h1>Welcome to airbnb</h1>
-      <h2>Here are our registered homes:</h2>
-      <ul>
-        <% homes.forEach(home=> { %>
-          <li>
-            <h3>
-              <%= home.name %>
-            </h3>
-            <p>
-              <%= home._id %>
-            </p>
-            <p>
-              <%= home.location %>
-            </p>
-            <p>Price per night: $<%= home.price %>
-            </p>
-            <p>
-              <!-- passed variable of home  -->
-              <%- include('partials/favourites', {home:home} ) %>
-            </p>
-            <a href="/homes/<%=home._id%>">Details</a>
-            <a href="/host/edit-home/<%=home._id%>">Edit</a>
-            <button onclick="deleteHome('<%= home._id %>')">Delete</button>
-          </li>
+      <h1 class="page-title">Explore Registered Homes</h1>
+      
+      <% if (homes.length === 0) { %>
+        <div class="empty-state">
+          <h3>No homes available right now</h3>
+          <p>Check back later or add a new home to the list.</p>
+          <a href="/host/add-home" class="btn btn-primary">Add Your Home</a>
+        </div>
+      <% } else { %>
+        <div class="properties-grid">
+          <% homes.forEach(home => { %>
+            <div class="property-card">
+              <div class="property-card-content">
+                <div class="property-card-title-row">
+                  <h3 class="property-card-title"><%= home.name %></h3>
+                  <%- include('partials/favourites', {home: home}) %>
+                </div>
+                <p class="property-card-location">📍 <%= home.location %></p>
+                <div class="property-card-price">$<%= home.price %> <span style="font-size:0.8rem; font-weight:normal;">/ night</span></div>
+              </div>
+              
+              <div class="property-card-actions">
+                <a href="/homes/<%=home._id%>" class="btn btn-outline btn-sm" style="flex: 1; text-align: center;">Details</a>
+                <a href="/host/edit-home/<%=home._id%>" class="btn btn-outline btn-sm">Edit</a>
+                <button onclick="deleteHome('<%= home._id %>')" class="btn btn-sm" style="background-color: var(--error); color: white; border: none; cursor: pointer;">Delete</button>
+              </div>
+            </div>
           <% }) %>
-      </ul>
-      <a href="/host/add-home" class="btn">Add Home</a>
+        </div>
+      <% } %>
     </div>
-</body>
+  </main>
 
-<script>
-  async function deleteHome(id) {
-    console.log("Delete home", id);
-    try {
-      const res = await fetch(`/host/delete-home/${id}`, { method: "DELETE" });
-      if (res.ok) {
-        alert("Home deleted successfully");
-        location.reload();
-      } else {
-        alert("Failed to delete home");
+  <script>
+    async function deleteHome(id) {
+      if (!confirm("Are you sure you want to delete this home?")) return;
+      
+      try {
+        const res = await fetch(`/host/delete-home/${id}`, { method: "DELETE" });
+        if (res.ok) {
+          location.reload();
+        } else {
+          alert("Failed to delete home");
+        }
+      } catch (error) {
+        console.error("Error deleting home:", error);
+        alert("An error occurred while deleting the home");
       }
-    } catch (error) {
-      console.error("Error deleting home:", error);
-      alert("An error occurred while deleting the home");
     }
-  }
-</script>
-
+  </script>
+</body>
 </html>

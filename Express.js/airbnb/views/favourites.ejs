@@ -1,39 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Favourites</title>
+    <title>Favourites - Airbnb</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
-
 <body>
     <%- include('partials/header') %>
+    
+    <main>
         <div class="container">
-            <h1>Here are your Favourite homes:</h1>
-            <ul>
-                <% homes.forEach(home=> { %>
-                    <li>
-                        <h3>
-                            <%= home.name %>
-                        </h3>
-                        <p>
-                            <%= home._id %>
-                        </p>
-                        <p>
-                            <%= home.location %>
-                        </p>
-                        <p>Price per night: $<%= home.price %>
-                        </p>
-                        <a href="/homes/<%=home._id%>">Details</a>
-                    </li>
+            <h1 class="page-title">Your Favourite Homes</h1>
+            
+            <% if (homes.length === 0) { %>
+                <div class="empty-state">
+                  <h3>No favorites yet!</h3>
+                  <p>Browse homes and tap the heart icon to save them here.</p>
+                  <a href="/" class="btn btn-primary">Explore Homes</a>
+                </div>
+            <% } else { %>
+                <div class="properties-grid">
+                    <% homes.forEach(home => { %>
+                        <div class="property-card">
+                            <div class="property-card-content">
+                                <div class="property-card-title-row">
+                                  <h3 class="property-card-title"><%= home.name %></h3>
+                                </div>
+                                <p class="property-card-location">📍 <%= home.location %></p>
+                                <div class="property-card-price">$<%= home.price %> <span style="font-size:0.8rem; font-weight:normal;">/ night</span></div>
+                            </div>
+                            
+                            <div class="property-card-actions">
+                                <a href="/homes/<%=home._id%>" class="btn btn-primary" style="flex: 1; text-align: center;">View Details</a>
+                            </div>
+                        </div>
                     <% }) %>
-            </ul>
-
-            <a href="/" class="btn">Back To Home</a>
+                </div>
+                
+                <div style="margin-top: 40px; text-align: center;">
+                    <a href="/" class="btn btn-outline">Back To Home</a>
+                </div>
+            <% } %>
         </div>
-
+    </main>
 </body>
-
 </html>

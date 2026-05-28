@@ -33,7 +33,7 @@ export async function getEditHome(req, res) {
             console.log("Home not found");
             res.redirect("/");
         }
-        res.render("edit-home", { home: homeData });
+        res.render("edit-home", { home: homeData, isLoggedIn: req.isLoggedIn });
     }).catch(err => console.log(err));
 }
 
