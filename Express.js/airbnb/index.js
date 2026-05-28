@@ -32,7 +32,6 @@ app.set("views", "views"); // define html folder at right
 // default middlewear for console
 app.use((req, res, next) => {
   console.log(req.url, req.method);
-  console.log("session", req.session);
   next();
 });
 
@@ -53,7 +52,8 @@ app.use(session({
 // middlewear for cookies & session
 app.use((req, res, next) => {
   console.log("cookies", req.get("Cookie"));
-  console.log("session", req.session, req.session.isLoggedIn);
+  // console.log("sessiont", req.session);
+  console.log("isLoggedIn", req.session.isLoggedIn);
   // req.isLoggedIn = req.get("Cookie")?.split('=')[1] === "true" || false;
   req.isLoggedIn = req.session.isLoggedIn || false;
   next();

@@ -4,7 +4,7 @@ import homeMONGOOSE from "../models/homeMONGOOSE.js";
 
 export async function getHome(req, res, next) {
     homeMONGOOSE.find().then((homesData) => {
-        console.log("fetchAll MONGOOSE", homesData);
+        // console.log("fetchAll MONGOOSE", homesData);
         res.render("home", { homes: homesData, isLoggedIn: req.isLoggedIn });
     }).catch(err => console.log(err));
 }
