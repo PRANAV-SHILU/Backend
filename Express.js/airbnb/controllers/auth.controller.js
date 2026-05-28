@@ -8,10 +8,28 @@ export async function getRegisterPage(req, res) {
 
 export const registerValidation = [
   check("email")
+  .notEmpty()
     .isEmail()
     .withMessage("Invalid email")
     .trim(),
   check("password")
+  .notEmpty()
+    .isLength({ min: 3 })
+    .withMessage("Password must be at least 3 characters long")
+    .trim(),
+  check("userType")
+  .notEmpty()
+    .isIn(["guest", "host"])
+    .withMessage("User type must be 'guest' or 'host'"),
+];
+export const loginValidation = [
+  check("email")
+  .notEmpty()
+    .isEmail()
+    .withMessage("Invalid email")
+    .trim(),
+  check("password")
+  .notEmpty()
     .isLength({ min: 3 })
     .withMessage("Password must be at least 3 characters long")
     .trim(),
@@ -22,23 +40,37 @@ export async function postRegisterPage(req, res) {
 
   if (!errors.isEmpty()) {
     console.log("Validation errors", errors.array());
-    return res.render("register", { isLoggedIn: false, errors: errors.array() });
+    return res.render("register", {
+      isLoggedIn: false,
+      errors: errors.array(),
+      oldInput: { email: req.body.email, userType: req.body.userType },
+    });
   }
-  const { email, password } = req.body;
+  const { email, password, userType } = req.body;
 
-  console.log("register data", email, password);
+  console.log("register data", email, password, userType);
 
   const isExists = await auth.findOne({ email: email });
 
   if (isExists) {
     console.log("user already found");
-    return res.redirect("/auth/register");
+    return res.render("register", {
+      isLoggedIn: false,
+      errors: [{ msg: "An account with this email already exists." }],
+      oldInput: { email, userType },
+    });
   }
 
-  const newUser = new auth({ email: email, password: password });
+  const newUser = new auth({ email, password, userType });
   newUser.save().then((user) => {
     console.log("new user created", user);
     res.redirect("/");
+  }).catch(() => {
+    res.render("register", {
+      isLoggedIn: false,
+      errors: [{ msg: "Something went wrong. Please try again." }],
+      oldInput: { email, userType },
+    });
   });
 }
 
@@ -52,7 +84,11 @@ export async function postLoginPage(req, res) {
 
     if (!errors.isEmpty()) {
       console.log("Validation errors", errors.array());
-      return res.render("login", { isLoggedIn: false, errors: errors.array() });
+      return res.render("login", {
+        isLoggedIn: false,
+        errors: errors.array(),
+        oldInput: { email: req.body.email },
+      });
     }
 
     const { email, password } = req.body;
@@ -62,16 +98,26 @@ export async function postLoginPage(req, res) {
 
     if (!isExists) {
       console.log("user not found");
-      return res.redirect("/auth/login");
+      return res.render("login", {
+        isLoggedIn: false,
+        errors: [{ msg: "Invalid email or password." }],
+        oldInput: { email },
+      });
     }
 
     console.log("user found", isExists);
     req.session.isLoggedIn = true;
+    req.session.userType = isExists.userType;
+    req.session.userId = isExists._id.toString();
     // res.cookie("isLoggedIn", true);
     res.redirect("/");
   } catch (error) {
     console.log("error in post login", error);
-    res.render("/auth/login");
+    res.render("login", {
+      isLoggedIn: false,
+      errors: [{ msg: "Something went wrong. Please try again." }],
+      oldInput: { email: req.body.email },
+    });
   }
 }
 

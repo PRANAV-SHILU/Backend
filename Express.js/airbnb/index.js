@@ -52,8 +52,7 @@ app.use(session({
 // middlewear for cookies & session
 app.use((req, res, next) => {
   console.log("cookies", req.get("Cookie"));
-  // console.log("sessiont", req.session);
-  console.log("isLoggedIn", req.session.isLoggedIn);
+  console.log("sessiont", req.session);
   // req.isLoggedIn = req.get("Cookie")?.split('=')[1] === "true" || false;
   req.isLoggedIn = req.session.isLoggedIn || false;
   next();

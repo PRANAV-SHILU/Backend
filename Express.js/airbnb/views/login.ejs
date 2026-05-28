@@ -5,6 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - Airbnb</title>
     <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      .error-list {
+        background: #fff5f5;
+        border: 1px solid #feb2b2;
+        border-radius: var(--radius-sm);
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        list-style: none;
+      }
+      .error-list li {
+        color: var(--error);
+        font-size: 0.875rem;
+        display: block;
+        padding: 2px 0;
+        border: none;
+        background: none;
+        box-shadow: none;
+      }
+    </style>
   </head>
   <body>
     <%- include('partials/header') %>
@@ -13,11 +32,19 @@
       <div class="auth-container">
         <h1 class="page-title" style="margin-top: 0;">Welcome Back</h1>
         <p style="text-align: center; margin-bottom: 30px;">Please login to your account.</p>
-        
+        <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+          <ul class="error-list">
+            <% errors.forEach(e => { %>
+              <li>⚠ <%= e.msg %></li>
+            <% }) %>
+          </ul>
+        <% } %>
+
         <form action="/auth/login" method="POST">
           <div class="form-group">
             <label for="email">Email address</label>
-            <input type="email" id="email" name="email" class="form-control" required />
+            <input type="email" id="email" name="email" class="form-control"
+              value="<%= typeof oldInput !== 'undefined' ? oldInput.email : '' %>" required />
           </div>
           
           <div class="form-group">

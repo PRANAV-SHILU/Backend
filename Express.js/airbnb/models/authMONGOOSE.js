@@ -9,6 +9,12 @@ const authSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    userType: {
+        type: String,
+        enum: ["guest", "host"],
+        default: "guest",
+        required: true
     }
 });
 
