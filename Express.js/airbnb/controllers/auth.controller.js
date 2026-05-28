@@ -64,7 +64,7 @@ export async function postRegisterPage(req, res) {
   const newUser = new auth({ email, password, userType });
   newUser.save().then((user) => {
     console.log("new user created", user);
-    res.redirect("/");
+    res.redirect("/auth/login");
   }).catch(() => {
     res.render("register", {
       isLoggedIn: false,

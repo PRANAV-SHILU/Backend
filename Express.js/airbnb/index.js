@@ -55,6 +55,8 @@ app.use((req, res, next) => {
   console.log("sessiont", req.session);
   // req.isLoggedIn = req.get("Cookie")?.split('=')[1] === "true" || false;
   req.isLoggedIn = req.session.isLoggedIn || false;
+  req.userId = req.session.userId || null;
+  req.userType = req.session.userType || "guest";
   next();
 })
 
