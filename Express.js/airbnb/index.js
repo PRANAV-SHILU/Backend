@@ -55,8 +55,7 @@ app.use((req, res, next) => {
   console.log("sessiont", req.session);
   // req.isLoggedIn = req.get("Cookie")?.split('=')[1] === "true" || false;
   req.isLoggedIn = req.session.isLoggedIn || false;
-  req.userId = req.session.userId || null;
-  req.userType = req.session.userType || "guest";
+  req.user = req.session.user || null;
   next();
 })
 
@@ -64,13 +63,13 @@ app.use("/", userRouter);
 
 // middlewear checks cookie in req set by previous middleware
 app.use("/host", (req, res, next) => {
-  if (!req.isLoggedIn) {
-    return res.redirect("/auth/login");
+  if (!req.isLoggedIn || !(req.user.userType === "host")) {
+    return res.redirect("/");
   }
   next();
 });
-
 app.use("/host", hostRouter);
+
 app.use("/auth", authRouter);
 
 // if none of above routes matches then this default 404, must be at below

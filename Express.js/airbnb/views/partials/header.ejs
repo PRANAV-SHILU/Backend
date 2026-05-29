@@ -2,12 +2,20 @@
   <div class="logo">
     <a href="/">🏠 Airbnb</a>
   </div>
+  <div style="display:flex;flex-direction: column;align-items: center;gap: 4px;">
+    <% if(isLoggedIn && user) { %>
+      <span style="color:green">👤 <%= user.userType %></span>
+      <span style="color:green"> <%= user.email %></span>
+      <span style="color:green"> <%= user._id %></span>
+    <% } %>
+  </div>
   <nav>
-    <a href="/">Home</a>
-    
     <% if(isLoggedIn) { %>
-      <a href="/favourites">Favourites</a>
-      <a href="/host/add-home" class="btn btn-primary btn-sm">Add Home</a>
+      <% if(user && user.userType==="host" ) { %>
+        <a href="/host/add-home" class="btn btn-primary btn-sm">Add Home</a>
+      <% } else { %>
+        <a href="/favourites">Favourites</a>
+      <% } %>
       <a href="/auth/logout" class="btn btn-outline btn-sm">Logout</a>
     <% } else { %>
       <a href="/auth/register" class="btn btn-outline btn-sm">Register</a>

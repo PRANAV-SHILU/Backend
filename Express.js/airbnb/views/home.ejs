@@ -36,8 +36,13 @@
               
               <div class="property-card-actions">
                 <a href="/homes/<%=home._id%>" class="btn btn-outline btn-sm" style="flex: 1; text-align: center;">Details</a>
+
+                <% if(isLoggedIn && user && user.userType === "host") { %>
                 <a href="/host/edit-home/<%=home._id%>" class="btn btn-outline btn-sm">Edit</a>
                 <button onclick="deleteHome('<%= home._id %>')" class="btn btn-sm" style="background-color: var(--error); color: white; border: none; cursor: pointer;">Delete</button>
+                <% } %>
+
+
               </div>
             </div>
           <% }) %>

@@ -4,7 +4,7 @@ import { check, validationResult } from "express-validator";
 import bcrypt from "bcrypt";
 
 export async function getRegisterPage(req, res) {
-  res.render("register", { isLoggedIn: false });
+  res.render("register", { isLoggedIn: false, user: null });
 }
 
 export const registerValidation = [
@@ -35,6 +35,7 @@ export async function postRegisterPage(req, res) {
     console.log("Validation errors", errors.array());
     return res.render("register", {
       isLoggedIn: false,
+      user: null,
       errors: errors.array(),
       oldInput: { email: req.body.email, userType: req.body.userType },
     });
@@ -49,6 +50,7 @@ export async function postRegisterPage(req, res) {
     console.log("user already found");
     return res.render("register", {
       isLoggedIn: false,
+      user: null,
       errors: [{ msg: "An account with this email already exists." }],
       oldInput: { email, userType },
     });
@@ -66,6 +68,7 @@ export async function postRegisterPage(req, res) {
     .catch(() => {
       res.render("register", {
         isLoggedIn: false,
+        user: null,
         errors: [{ msg: "Something went wrong. Please try again." }],
         oldInput: { email, userType },
       });
@@ -73,7 +76,7 @@ export async function postRegisterPage(req, res) {
 }
 
 export async function getLoginPage(req, res) {
-  res.render("login", { isLoggedIn: false });
+  res.render("login", { isLoggedIn: false, user: null });
 }
 
 export async function postLoginPage(req, res) {
@@ -84,6 +87,7 @@ export async function postLoginPage(req, res) {
       console.log("Validation errors", errors.array());
       return res.render("login", {
         isLoggedIn: false,
+        user: null,
         errors: errors.array(),
         oldInput: { email: req.body.email },
       });
@@ -98,6 +102,7 @@ export async function postLoginPage(req, res) {
       console.log("user not found");
       return res.render("login", {
         isLoggedIn: false,
+        user: null,
         errors: [{ msg: "Invalid email." }],
         oldInput: { email },
       });
@@ -112,6 +117,7 @@ export async function postLoginPage(req, res) {
       console.log("password does not match");
       return res.render("login", {
         isLoggedIn: false,
+        user: null,
         errors: [{ msg: "Invalid password." }],
         oldInput: { email },
       });
@@ -119,14 +125,18 @@ export async function postLoginPage(req, res) {
 
     console.log("user found", isExists);
     req.session.isLoggedIn = true;
-    req.session.userType = isExists.userType;
-    req.session.userId = isExists._id.toString();
+    req.session.user = {
+      _id: isExists._id.toString(),
+      email: isExists.email,
+      userType: isExists.userType,
+    };
     // res.cookie("isLoggedIn", true);
     res.redirect("/");
   } catch (error) {
     console.log("error in post login", error);
     res.render("login", {
       isLoggedIn: false,
+      user: null,
       errors: [{ msg: "Something went wrong. Please try again." }],
       oldInput: { email: req.body.email },
     });
