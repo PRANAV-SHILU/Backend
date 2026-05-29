@@ -1,8 +1,8 @@
+<% const isFav = typeof userFavourites !== 'undefined' && userFavourites.includes(home._id.toString()); %>
 <form action="/favourites" method="post">
-  <!-- <input type="hidden" name="id" value="<%= home._id %>"> -->
-
-  <!-- for mongo -->
   <input type="hidden" name="id" value="<%= home._id %>" />
-
-  <button type="submit" class="btn">Favourite</button>
+  <button type="submit" class="btn favourite-btn <%= isFav ? 'is-favourite' : '' %>"
+          title="<%= isFav ? 'Remove from favourites' : 'Add to favourites' %>">
+    <%= isFav ? '❤️' : '🤍' %>
+  </button>
 </form>

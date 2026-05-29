@@ -15,7 +15,11 @@ const authSchema = new mongoose.Schema({
         enum: ["guest", "host"],
         default: "guest",
         required: true
-    }
+    },
+    favourites: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Home"
+    }]
 });
 
 export default mongoose.model("auth", authSchema);

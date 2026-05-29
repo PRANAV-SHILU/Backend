@@ -19,6 +19,7 @@ import {
   getHome,
   getHomeByID,
   postAddToFavourites,
+  deleteFromFavourites,
 } from "../controllers/HomesMONGOOSE.controller.js";
 // import {
 //   getFavourites,
@@ -35,6 +36,8 @@ userRouter.get("/", getHome);
 userRouter.get("/homes/:homeID", getHomeByID);
 
 userRouter.post("/favourites", postAddToFavourites);
+
+userRouter.delete("/favourites/:homeID", deleteFromFavourites);
 
 userRouter.get("/favourites", getFavourites);
 

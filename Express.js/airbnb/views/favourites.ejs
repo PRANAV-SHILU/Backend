@@ -33,6 +33,12 @@
                             
                             <div class="property-card-actions">
                                 <a href="/homes/<%=home._id%>" class="btn btn-primary" style="flex: 1; text-align: center;">View Details</a>
+                                <button onclick="removeFromFavourites('<%= home._id %>')"
+                                        class="btn btn-sm"
+                                        style="background-color: var(--error); color: white; border: none; cursor: pointer;"
+                                        title="Remove from favourites">
+                                  🗑️ Remove
+                                </button>
                             </div>
                         </div>
                     <% }) %>
@@ -44,5 +50,22 @@
             <% } %>
         </div>
     </main>
+
+    <script>
+      async function removeFromFavourites(homeId) {
+        if (!confirm("Remove this home from your favourites?")) return;
+        try {
+          const res = await fetch(`/favourites/${homeId}`, { method: "DELETE" });
+          if (res.ok) {
+            location.reload();
+          } else {
+            alert("Failed to remove from favourites");
+          }
+        } catch (err) {
+          console.error("Error removing favourite:", err);
+          alert("An error occurred");
+        }
+      }
+    </script>
 </body>
 </html>
