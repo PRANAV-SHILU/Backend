@@ -1,50 +1,151 @@
-id must be compared in string format, not number format and also in new object id format. So we need to convert the homeID to string and then to ObjectId before comparing it.
+# Airbnb — Express.js + MongoDB Notes
 
-_id : new ObjectId(String(homeID))
+---
 
+## 📌 ObjectId Comparison
 
-mongodb - mongoose
+ID must be compared in **string format**, not number format, and also in `new ObjectId` format.  
+Convert the `homeID` to string and then to `ObjectId` before comparing:
 
-mongoos expect object inside the constructor, so we need to pass an object with the properties name, location and price instead of passing them as separate arguments.
+```js
+_id: new ObjectId(String(homeID))
+```
 
-MONGOOSE
-save() - insert
-find() - search select all
-findById() - search select by id
-findByIdAndUpdate() - update by id
-findByIdAndDelete() - delete by id
+---
 
+## 📌 Mongoose Constructor Note
 
-MONGODB
-insertOne() - insert 
-find() - search select all
-findOne() - search select one
-updateOne() - update one
-deleteOne() - delete one
-toArray() - convert cursor to array
-findOneAndUpdate() - update one and return the updated document
-findOneAndDelete() - delete one and return the deleted document
+Mongoose expects an **object** inside the constructor. Pass an object with the properties instead of separate arguments:
 
-find().populate("houseId") 
+```js
+new Home({ name: "Beach House", location: "Goa", price: 5000 })
+```
 
+---
 
-pre hooks is like middleware that runs on certain events like save, update, delete etc. 
+## 📊 MongoDB vs Mongoose — Query Comparison
 
+| Operation | 🟢 Mongoose (ODM) | 🔵 MongoDB (Native Driver) | Notes |
+|---|---|---|---|
+| **Insert** | `new Model({...}).save()` | `db.collection().insertOne({...})` | Mongoose validates schema; MongoDB returns `insertedId` |
+| **Select All** | `Model.find()` | `db.collection().find().toArray()` | MongoDB returns a cursor; must call `.toArray()` |
+| **Select One by ID** | `Model.findById(id)` | `db.collection().findOne({ _id: new ObjectId(id) })` | Mongoose auto-wraps `id`; MongoDB requires `new ObjectId()` |
+| **Select One by Field** | `Model.findOne({ field: value })` | `db.collection().findOne({ field: value })` | Both return `null` if not found |
+| **Update by ID** | `Model.findByIdAndUpdate(id, update, { new: true })` | `db.collection().findOneAndUpdate({ _id: new ObjectId(id) }, { $set: update }, { returnDocument: "after" })` | Use `{ new: true }` in Mongoose / `{ returnDocument: "after" }` in MongoDB to get updated doc |
+| **Update One** | `Model.updateOne({ filter }, update)` | `db.collection().updateOne({ filter }, { $set: update })` | Returns `modifiedCount`; doesn't return the document |
+| **Delete by ID** | `Model.findByIdAndDelete(id)` | `db.collection().findOneAndDelete({ _id: new ObjectId(id) })` | Both return the deleted document |
+| **Delete One** | `Model.deleteOne({ filter })` | `db.collection().deleteOne({ filter })` | Returns `deletedCount`; doesn't return the document |
+| **Convert to Array** | *(not needed — returns array directly)* | `cursor.toArray()` | MongoDB `find()` returns a lazy cursor |
 
+---
 
+## 📌 Populate (Mongoose)
 
-cookies are small pieces of data that are stored on the client side and sent to the server with every request. They are used for authentication, session management, and storing user preferences. In Express.js, we can use the cookie-parser middleware to parse cookies and access them in our routes. We can also set cookies using the res.cookie() method.
+`populate()` is used to replace a referenced `ObjectId` field with the actual document data — similar to a SQL JOIN:
 
-use default middlewear to attach coockie in every request like req.isLoggedIn = req.get("Cookie")?.split('=')[1] === "true" || false; so that we can use it in any route without checking for cookie every time.
- we can simply get req.isLoggedIn in any route to check if the user is logged in or not.
+```js
+find().populate("houseId")
+// Replaces houseId ObjectId with the full house document
+```
 
- 
+---
 
+## 📌 Pre Hooks (Mongoose Middleware)
 
- express-session: It is a middleware that allows us to manage user sessions in our Express.js application. It stores session data on the server side and uses cookies to identify the session on the client side. We can configure it with options like secret, resave, saveUninitialized, and store. The store option allows us to specify where to store the session data, and we can use connect-mongodb-session to store it in MongoDB.
+Pre hooks run **before** certain lifecycle events like `save`, `update`, `delete`, etc.:
 
- connect-mongodb-session: It is a MongoDB-based session store for Express.js. It allows us to store session data in a MongoDB database, which is useful for scalability and persistence. We can configure it with options like uri and collection to specify the MongoDB connection string and the collection name where the sessions will be stored.
+```js
+HomeSchema.pre("save", function (next) {
+  // runs before every save()
+  next();
+});
+```
 
+---
 
+## 🍪 Cookies
 
- express-validator: It is a middleware that allows us to validate and sanitize user input in our Express.js application. We can configure it with various validation and sanitization rules to validate and sanitize user input. We can also use it to validate and sanitize user input in our routes. 
+Cookies are small pieces of data stored on the **client side** and sent to the server with every request.  
+They are used for authentication, session management, and storing user preferences.
+
+In Express.js, use the `cookie-parser` middleware to parse cookies and access them in routes.  
+Set cookies using `res.cookie()`.
+
+### Attaching Cookie State via Default Middleware
+
+Use a global middleware to attach cookie data to every request, so you don't have to check it in every route:
+
+```js
+app.use((req, res, next) => {
+  req.isLoggedIn = req.get("Cookie")?.split("=")[1] === "true" || false;
+  next();
+});
+
+// Then in any route:
+req.isLoggedIn  // true or false
+```
+
+---
+
+## 📦 Libraries
+
+### `express-session`
+
+Middleware to manage **user sessions** in Express.js.
+
+- Stores session data on the **server side**
+- Uses cookies to identify the session on the client side
+- Options: `secret`, `resave`, `saveUninitialized`, `store`
+- Use `connect-mongodb-session` as the store to persist sessions in MongoDB
+
+```js
+app.use(session({
+  secret: "mySecret",
+  resave: false,
+  saveUninitialized: false,
+  store: store,  // connect-mongodb-session instance
+}));
+```
+
+---
+
+### `connect-mongodb-session`
+
+A **MongoDB-based session store** for Express.js.
+
+- Stores session data in a MongoDB collection
+- Useful for scalability and persistence across server restarts
+- Options: `uri` (MongoDB connection string), `collection` (collection name)
+
+```js
+const store = new MongoDBStore({
+  uri: "mongodb://localhost:27017/airbnb",
+  collection: "sessions",
+});
+```
+
+---
+
+### `express-validator`
+
+Middleware to **validate and sanitize** user input in Express.js routes.
+
+- Configure with various validation and sanitization rules
+- Chain validators like `body("email").isEmail()`, `body("password").isLength({ min: 6 })`
+- Access errors via `validationResult(req)`
+
+```js
+const { body, validationResult } = require("express-validator");
+
+router.post("/signup",
+  body("email").isEmail(),
+  body("password").isLength({ min: 6 }),
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    // proceed
+  }
+);
+```
