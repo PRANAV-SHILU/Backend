@@ -149,3 +149,8 @@ router.post("/signup",
   }
 );
 ```
+
+
+## Bcrypt
+
+Bcrypt is a password hashing function that is used to securely store passwords.

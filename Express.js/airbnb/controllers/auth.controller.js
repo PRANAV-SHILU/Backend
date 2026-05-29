@@ -1,35 +1,28 @@
 import mongoose from "mongoose";
 import auth from "../models/authMONGOOSE.js";
 import { check, validationResult } from "express-validator";
+import bcrypt from "bcrypt";
 
 export async function getRegisterPage(req, res) {
   res.render("register", { isLoggedIn: false });
 }
 
 export const registerValidation = [
-  check("email")
-  .notEmpty()
-    .isEmail()
-    .withMessage("Invalid email")
-    .trim(),
+  check("email").notEmpty().isEmail().withMessage("Invalid email").trim(),
   check("password")
-  .notEmpty()
+    .notEmpty()
     .isLength({ min: 3 })
     .withMessage("Password must be at least 3 characters long")
     .trim(),
   check("userType")
-  .notEmpty()
+    .notEmpty()
     .isIn(["guest", "host"])
     .withMessage("User type must be 'guest' or 'host'"),
 ];
 export const loginValidation = [
-  check("email")
-  .notEmpty()
-    .isEmail()
-    .withMessage("Invalid email")
-    .trim(),
+  check("email").notEmpty().isEmail().withMessage("Invalid email").trim(),
   check("password")
-  .notEmpty()
+    .notEmpty()
     .isLength({ min: 3 })
     .withMessage("Password must be at least 3 characters long")
     .trim(),
@@ -61,17 +54,22 @@ export async function postRegisterPage(req, res) {
     });
   }
 
-  const newUser = new auth({ email, password, userType });
-  newUser.save().then((user) => {
-    console.log("new user created", user);
-    res.redirect("/auth/login");
-  }).catch(() => {
-    res.render("register", {
-      isLoggedIn: false,
-      errors: [{ msg: "Something went wrong. Please try again." }],
-      oldInput: { email, userType },
+  const hashedPassword = await bcrypt.hash(password, 12);
+
+  const newUser = new auth({ email, hashedPassword, userType });
+  newUser
+    .save()
+    .then((user) => {
+      console.log("new user created", user);
+      res.redirect("/auth/login");
+    })
+    .catch(() => {
+      res.render("register", {
+        isLoggedIn: false,
+        errors: [{ msg: "Something went wrong. Please try again." }],
+        oldInput: { email, userType },
+      });
     });
-  });
 }
 
 export async function getLoginPage(req, res) {
@@ -94,13 +92,27 @@ export async function postLoginPage(req, res) {
     const { email, password } = req.body;
     console.log("login data", email, password);
 
-    const isExists = await auth.findOne({ email: email, password: password });
+    const isExists = await auth.findOne({ email: email });
 
     if (!isExists) {
       console.log("user not found");
       return res.render("login", {
         isLoggedIn: false,
-        errors: [{ msg: "Invalid email or password." }],
+        errors: [{ msg: "Invalid email." }],
+        oldInput: { email },
+      });
+    }
+
+    const doPasswordsMatch = await bcrypt.compare(
+      password,
+      isExists.hashedPassword,
+    );
+
+    if (!doPasswordsMatch) {
+      console.log("password does not match");
+      return res.render("login", {
+        isLoggedIn: false,
+        errors: [{ msg: "Invalid password." }],
         oldInput: { email },
       });
     }
