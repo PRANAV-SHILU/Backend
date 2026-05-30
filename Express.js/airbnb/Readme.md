@@ -1,4 +1,4 @@
-# Airbnb — Express.js + MongoDB Notes
+# Airbnb — Express.js + MongoDB + MONGOOSE Notes
 
 ---
 

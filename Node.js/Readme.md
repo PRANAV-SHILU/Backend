@@ -203,3 +203,100 @@ Streams process data **in chunks** as it arrives, instead of loading everything 
 - `error` — write error.
 - `close` — underlying resource closed.
 - `pipe` / `unpipe` — piping started/stopped.
+
+---
+
+## 9. Libraries
+
+### 9.1 bcrypt
+
+**bcrypt** is a library used to **hash and verify passwords** securely. It uses a one-way hashing algorithm with a built-in **salt** to protect against brute-force and rainbow table attacks.
+
+#### Why bcrypt?
+
+- Passwords should **never be stored as plain text**.
+- bcrypt makes hashes **slow by design** (via cost factor), making attacks expensive.
+- Each hash is **unique** even for the same password (due to salting).
+
+#### Key Concepts
+
+| Term | Description |
+| :--- | :---------- |
+| **Hashing** | One-way transformation of a password into a fixed string |
+| **Salt** | Random data added before hashing to ensure uniqueness |
+| **Salt Rounds** | Cost factor — higher = slower & more secure (e.g., `10`) |
+
+#### Core Methods
+
+1. **Hash a password:**
+   ```javascript
+   import bcrypt from "bcrypt";
+
+   const saltRounds = 10;
+   const hash = await bcrypt.hash("myPassword", saltRounds);
+   ```
+
+2. **Verify a password:**
+   ```javascript
+   const isMatch = await bcrypt.compare("myPassword", hash);
+   // returns true or false
+   ```
+
+> [!NOTE]
+> Always use `await` with bcrypt methods since they are asynchronous. Higher salt rounds = stronger security but slower performance. A value of `10–12` is recommended for most apps.
+
+---
+
+### 9.2 busboy
+
+**busboy** is a Node.js library for **parsing incoming HTML form data**, especially `multipart/form-data` (used for file uploads).
+
+#### Why busboy?
+
+- Node.js does **not** natively parse `multipart/form-data`.
+- busboy streams file uploads directly to disk or memory **without buffering the entire file**, making it memory-efficient.
+
+#### How It Works
+
+1. Create a `busboy` instance with the request headers.
+2. Listen to `file` events for uploaded files.
+3. Listen to `field` events for regular form fields.
+4. Pipe the request into busboy.
+
+#### Core Events
+
+| Event | Description |
+| :---- | :---------- |
+| `file` | Fired for each uploaded file — provides filename, stream, and mimetype |
+| `field` | Fired for each non-file form field |
+| `finish` | Fired when all parts have been processed |
+| `error` | Fired on a parsing error |
+
+#### Basic Usage
+
+```javascript
+import busboy from "busboy";
+import fs from "fs";
+import path from "path";
+
+const bb = busboy({ headers: req.headers });
+
+bb.on("file", (fieldname, file, info) => {
+  const { filename, mimeType } = info;
+  const savePath = path.join("uploads", filename);
+  file.pipe(fs.createWriteStream(savePath));
+});
+
+bb.on("field", (name, value) => {
+  console.log(`Field: ${name} = ${value}`);
+});
+
+bb.on("finish", () => {
+  res.send("Upload complete!");
+});
+
+req.pipe(bb);
+```
+
+> [!NOTE]
+> busboy works by **streaming** — it never loads the full file into memory, making it ideal for handling large file uploads efficiently.
