@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router";
-import Header from "./src/Header.jsx";
-import App from "./src/App.jsx";
-import AddUser from "./src/AddUser.jsx";
-import EditUser from "./src/EditUser.jsx";
+import Header from "./Header.jsx";
+import App from "./App.jsx";
+import AddUser from "./AddUser.jsx";
+import EditUser from "./EditUser.jsx";
 
 function Router() {
   return (
