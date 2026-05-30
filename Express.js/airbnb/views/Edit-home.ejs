@@ -33,7 +33,7 @@
             <% if (home.image) { %>
               <!-- Current image preview -->
               <div style="margin-bottom: 12px;">
-                <img id="imagePreview" src="<%= backendUrl + home.image %>" alt="<%= home.name %>"
+                <img id="imagePreview" src="<%= backendUrl + home.image %>" alt="image"
                   style="width: 100%; height: 200px; object-fit: cover; border-radius: var(--radius-md); display: block;" />
                 <p style="margin-top: 8px; font-size: 0.82rem; color: var(--text-muted);">
                   📁 Current file: <strong><%= home.image.split('/').pop() %></strong>

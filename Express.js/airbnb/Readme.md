@@ -150,7 +150,61 @@ router.post("/signup",
 );
 ```
 
+---
 
-## Bcrypt
+### `bcrypt`
 
-Bcrypt is a password hashing function that is used to securely store passwords.
+A library to **hash and verify passwords** securely using the bcrypt algorithm.
+
+- Never store plain-text passwords — always hash them before saving to the DB
+- `bcrypt.hash(password, saltRounds)` — hashes a password asynchronously
+- `bcrypt.compare(plain, hash)` — verifies a plain password against a stored hash
+- `saltRounds` (cost factor) controls how computationally expensive the hash is (higher = slower = safer); `12` is a good default
+
+```js
+import bcrypt from "bcrypt";
+
+// Hashing a password before saving
+const hashedPassword = await bcrypt.hash(req.body.password, 12);
+
+// Verifying a password on login
+const isMatch = await bcrypt.compare(req.body.password, user.password);
+if (!isMatch) {
+  return res.redirect("/auth/login");
+}
+```
+
+---
+
+### `multer`
+
+Middleware for handling **multipart/form-data** — used to upload files (images, documents, etc.) from the client to the server.
+
+- Must set `enctype="multipart/form-data"` on the HTML `<form>`
+- Uploaded file is available on `req.file` (single) or `req.files` (multiple)
+- Use `diskStorage` to control the upload destination and filename
+- Use `fileFilter` to restrict accepted MIME types
+
+```js
+import multer from "multer";
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, "uploads/"),
+  filename:    (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
+});
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    const allowed = ["image/png", "image/jpeg", "image/jpg"];
+    cb(null, allowed.includes(file.mimetype));
+  },
+});
+
+// Single file upload — field name must match the form input's `name`
+app.use(upload.single("image"));
+
+// Access the uploaded file
+req.file.path;          // e.g. "uploads/1748590372-house.jpg"
+req.file.originalname;  // original filename from the client
+```
