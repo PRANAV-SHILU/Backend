@@ -1,6 +1,22 @@
 import mongoose from "mongoose";
 import authMONGOOSE from "../models/authMONGOOSE.js";
 import homeMONGOOSE from "../models/homeMONGOOSE.js";
+import fs from "fs";
+import path from "path";
+import rootDir from "../utils/pathUtil.js";
+
+// Safely delete an uploaded image file given its stored path (e.g. "uploads\file.jpg")
+function deleteImageFile(storedPath) {
+  if (!storedPath) return;
+  // Normalize separators so it works on both Windows and Unix
+  const normalized = storedPath.replace(/\\/g, "/");
+  if (!normalized.startsWith("uploads/")) return;
+  const absolutePath = path.join(rootDir, normalized);
+  fs.unlink(absolutePath, (err) => {
+    if (err) console.log("Could not delete image:", err.message);
+    else console.log("Image deleted:", absolutePath);
+  });
+}
 
 export async function getHome(req, res, next) {
   try {
@@ -18,6 +34,7 @@ export async function getHome(req, res, next) {
       isLoggedIn: req.isLoggedIn,
       user: req.session.user,
       userFavourites,
+      backendUrl: process.env.BACKEND_URL,
     });
   } catch (err) {
     console.log(err);
@@ -44,6 +61,7 @@ export async function getHomeByID(req, res) {
         home: homeData,
         isLoggedIn: req.isLoggedIn,
         user: req.session.user,
+        backendUrl: process.env.BACKEND_URL,
       });
     })
     .catch((err) => console.log(err));
@@ -70,6 +88,7 @@ export async function getEditHome(req, res) {
         home: homeData,
         isLoggedIn: req.isLoggedIn,
         user: req.session.user,
+        backendUrl: process.env.BACKEND_URL,
       });
     })
     .catch((err) => console.log(err));
@@ -81,6 +100,7 @@ export async function postAddHome(req, res) {
     name: req.body.name,
     location: req.body.location,
     price: req.body.price,
+    image: req.file.path,
   });
   home
     .save()
@@ -88,8 +108,10 @@ export async function postAddHome(req, res) {
       console.log("Home added successfully");
       res.render("homeAdded", {
         ...req.body,
+        image: req.file.path,
         isLoggedIn: req.isLoggedIn,
         user: req.session.user,
+        backendUrl: process.env.BACKEND_URL,
       });
     })
     .catch((err) => console.log("Error is postAddHome", err));
@@ -97,16 +119,27 @@ export async function postAddHome(req, res) {
 
 export async function postEditHome(req, res) {
   const homeID = req.params.id;
-  homeMONGOOSE
-    .findByIdAndUpdate(homeID, req.body)
-    .then((homeData) => {
-      if (!homeData) {
-        console.log("Home not found");
-        res.redirect("/");
-      }
-      res.redirect(`/`);
-    })
-    .catch((err) => console.log("Error is postEditHome", err));
+  const newImage = req?.file?.path;
+
+  try {
+    // Fetch the current home so we can delete the old image if needed
+    const existingHome = await homeMONGOOSE.findById(homeID);
+    if (!existingHome) {
+      console.log("Home not found");
+      return res.redirect("/");
+    }
+
+    if (newImage) {
+      req.body.image = newImage;
+      deleteImageFile(existingHome.image);
+    }
+
+    await homeMONGOOSE.findByIdAndUpdate(homeID, req.body);
+    res.redirect("/");
+  } catch (err) {
+    console.log("Error in postEditHome", err);
+    res.redirect("/");
+  }
 }
 
 // POST /favourites  — add a home to the logged-in user's favourites array
@@ -188,6 +221,7 @@ export async function getFavourites(req, res) {
       homes: favouriteHomes,
       isLoggedIn: req.isLoggedIn,
       user: req.session.user,
+      backendUrl: process.env.BACKEND_URL,
     });
   } catch (err) {
     console.log("Error in getFavourites:", err.message);
@@ -203,16 +237,19 @@ export async function getFavourites(req, res) {
 //     }).catch(err => console.log(err));
 // }
 
-export async function deleteHome(req, res) {
+export async function deleteHome(req, res) {  
   try {
     const homeID = req.params.id;
+    const home = await homeMONGOOSE.findByIdAndDelete(homeID);
 
-    await homeMONGOOSE.findByIdAndDelete(homeID);
+    if (home) {
+      deleteImageFile(home.image);
+    }
 
     // Remove this home from every user's favourites array
     await authMONGOOSE.updateMany(
       { favourites: homeID },
-      { $pull: { favourites: homeID } }
+      { $pull: { favourites: homeID } },
     );
 
     res.status(200).json({ message: "Home deleted successfully" });

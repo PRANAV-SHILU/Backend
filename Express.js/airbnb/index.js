@@ -8,10 +8,11 @@ import rootDir from "./utils/pathUtil.js";
 import db from "./utils/databaseUtilSQL.js";
 import mongoConnect from "./utils/databaseUtilMONGO.js";
 import mongoose from "mongoose";
-import session from "express-session"
+import session from "express-session";
 import MongoDBStore from "connect-mongodb-session";
+import multer from "multer";
 
-// connect-mongodb-session is used to store session in mongoDB, so that even if server restarts, session will be there in DB and user will not be logged out.
+// connect-mongodb-session is used to store session in mongoDB, so that even if server restarts, session will be t`here in DB and user will not be logged out.
 const MongoStore = MongoDBStore(session);
 
 // promise way
@@ -22,32 +23,61 @@ const MongoStore = MongoDBStore(session);
 // const [data] = await db.execute("SELECT * FROM homes");
 // console.log("Server started by await", data);
 
-
 const app = express();
 
 // for EJS, MUST REQUIRED
 app.set("view engine", "ejs");
 app.set("views", "views"); // define html folder at right
 
+app.use(express.static(path.join(rootDir, "public"))); //for css file
+app.use(express.urlencoded({ extended: true })); // getting and parsing body for POST
+app.use("/uploads", express.static(path.join(rootDir, "uploads")));
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const multerOptions = {
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    if (
+      file.mimetype === "image/png" ||
+      file.mimetype === "image/jpeg" ||
+      file.mimetype === "image/jpg"
+    ) {
+      cb(null, true);
+    } else {
+      cb(null, false);
+    }
+  },
+};
+
+app.use(multer(multerOptions).single("image")); // for multer
+
 // default middlewear for console
 app.use((req, res, next) => {
-  console.log(req.url, req.method);
+  console.log(req.url, req.method, req.body, req.file);
   next();
 });
 
-app.use(express.static(path.join(rootDir, "public"))); //for css file
-app.use(express.urlencoded()); // getting and parsing body for POST
-// express-session 
-app.use(session({
-  secret: "pranav secret key",
-  resave: false,
-  saveUninitialized: true,
-  // store session in mongoDB by connect-mongodb-session
-  store: new MongoStore({
-    uri: process.env.MONGO_URL_FOR_MONGOOSE,
-    collection: "sessions"
-  })
-}))
+// express-session
+app.use(
+  session({
+    secret: "pranav secret key",
+    resave: false,
+    saveUninitialized: true,
+    // store session in mongoDB by connect-mongodb-session
+    store: new MongoStore({
+      uri: process.env.MONGO_URL_FOR_MONGOOSE,
+      collection: "sessions",
+    }),
+  }),
+);
 
 // middlewear for cookies & session
 app.use((req, res, next) => {
@@ -57,7 +87,7 @@ app.use((req, res, next) => {
   req.isLoggedIn = req.session.isLoggedIn || false;
   req.user = req.session.user || null;
   next();
-})
+});
 
 app.use("/", userRouter);
 
@@ -82,7 +112,6 @@ app.use((req, res) => {
 //     <a href="/">Back to Home page</a>`);
 // });
 
-
 // for mongoDB
 // mongoConnect(() => {
 //   app.listen(3000, () => {
@@ -90,11 +119,14 @@ app.use((req, res) => {
 //   });
 // });
 
-mongoose.connect(process.env.MONGO_URL_FOR_MONGOOSE).then(() => {
-  console.log("connected to mongo");
-  app.listen(3000, () => {
-    console.log("🚀 Server running on http://localhost:3000");
+mongoose
+  .connect(process.env.MONGO_URL_FOR_MONGOOSE)
+  .then(() => {
+    console.log("connected to mongo");
+    app.listen(3000, () => {
+      console.log("🚀 Server running on http://localhost:3000");
+    });
+  })
+  .catch((err) => {
+    console.log("error while connecting to mongo", err);
   });
-}).catch((err) => {
-  console.log("error while connecting to mongo", err);
-});
