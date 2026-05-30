@@ -25,6 +25,9 @@
         <div class="properties-grid">
           <% homes.forEach(home => { %>
             <div class="property-card">
+              <% if (home.image) { %>
+                <img src="<%= backendUrl + home.image %>" alt="<%= home.name %>" class="property-card-image" />
+              <% } %>
               <div class="property-card-content">
                 <div class="property-card-title-row">
                   <h3 class="property-card-title"><%= home.name %></h3>

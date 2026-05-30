@@ -16,6 +16,9 @@
             </div>
             
             <div class="hero-detail" style="flex-direction: column;">
+                <% if (home.image) { %>
+                  <img src="<%= backendUrl + home.image %>" alt="<%= home.name %>" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: var(--radius-lg); margin-bottom: 24px;" />
+                <% } %>
                 <div class="hero-detail-content" style="flex: unset;">
                     <h1 class="hero-detail-title"><%= home.name %></h1>
                     <div class="hero-detail-meta">
