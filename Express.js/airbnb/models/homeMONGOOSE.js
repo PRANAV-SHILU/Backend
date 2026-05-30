@@ -6,6 +6,7 @@ const homeSchema = new mongoose.Schema({
   name: { type: String, required: true },
   location: { type: String, required: true },
   price: { type: Number, required: true },
+  image: { type: String, required: true },
 });
 
 // pre hook for delete home and associated favourites
